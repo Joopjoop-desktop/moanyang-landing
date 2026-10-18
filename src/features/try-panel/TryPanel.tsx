@@ -13,6 +13,8 @@ import chatIcon from '../../assets/figma/icon-chat-15.svg';
 import styles from './TryPanel.module.css';
 
 const FEED_MS = 900;
+/** 끌어다 놓은 뒤 고양이가 웃는 시간 (카드는 이미 생긴 상태) */
+const EAT_MS = 700;
 const MERGE_MS = 1700;
 
 /** 끄는 동안에는 커서를 바로 따라가고, 놓으면 제자리로 부드럽게 돌아갑니다 */
@@ -53,7 +55,7 @@ export function TryPanel() {
   // 단계 사이 연출이 끝나면 다음 단계로 넘어갑니다
   useEffect(() => {
     if (phase === 'idle') return;
-    const ms = reduceMotion ? 250 : phase === 'feeding' ? FEED_MS : MERGE_MS;
+    const ms = reduceMotion ? 250 : phase === 'feeding' ? FEED_MS : phase === 'eating' ? EAT_MS : MERGE_MS;
     const id = window.setTimeout(() => dispatch({ type: 'settle' }), ms);
     return () => window.clearTimeout(id);
   }, [phase, reduceMotion]);
@@ -68,7 +70,7 @@ export function TryPanel() {
 
   const insertMail = (method: Method) => {
     if (step !== 0 || busy) return;
-    dispatch({ type: 'insertMail' });
+    dispatch({ type: 'insertMail', method });
     trackTryStart(method);
   };
 
@@ -98,6 +100,8 @@ export function TryPanel() {
     enabled: step === 2 && !busy,
     targetRef: cardARef,
     onDrop: () => merge('drag'),
+    // 놓은 자리에서 그대로 합쳐지며 사라지도록 (제자리로 튕겨 돌아가지 않게)
+    keepOffsetOnDrop: true,
   });
 
   /* 서비스 화면에 넘길 상태 */
@@ -107,7 +111,7 @@ export function TryPanel() {
   const count = step === 3 ? 0 : merging ? 1 : (step >= 1 ? 1 : 0) + (step >= 2 ? 1 : 0);
 
   const list = (
-    <AnimatePresence initial={false} mode="popLayout">
+    <AnimatePresence initial={false}>
       {showA && (
         <TaskCard
           key={`a-${state.round}`}
@@ -134,7 +138,7 @@ export function TryPanel() {
             y: cardDrag.offset.y,
             rotate: cardDrag.dragging ? 1.2 : 0,
           }}
-          transition={followPointer(cardDrag.dragging)}
+          transition={followPointer(cardDrag.dragging || cardDrag.dropped)}
           exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.25 } }}
           {...cardDrag.bind}
         />
@@ -147,7 +151,7 @@ export function TryPanel() {
       count={count}
       inputRef={inputRef}
       inputText={inputTextOf(state, { mail: mail.picked, chat: chat.text })}
-      catSmile={phase === 'feeding'}
+      catSmile={phase === 'feeding' || phase === 'eating'}
       inputActive={mailDrag.over}
       day23Event={step === 3 ? eventTitle : null}
       list={list}
@@ -215,7 +219,8 @@ export function TryPanel() {
               step === 0 && !busy ? styles.draggable : ''
             } ${mailDrag.dragging ? styles.dragging : ''}`}
             animate={{ x: mailDrag.offset.x, y: mailDrag.offset.y }}
-            transition={followPointer(mailDrag.dragging)}
+            // 입력창에 놓았으면 제자리로 날아가지 않고 바로 '넣었어요' 상태로 돌아옵니다
+            transition={followPointer(mailDrag.dragging || mailDrag.dropped)}
             aria-label="메일 메시지"
             {...mailDrag.bind}
           >

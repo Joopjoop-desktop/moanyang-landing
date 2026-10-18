@@ -30,21 +30,21 @@ export type Scene = { start: number; chapter: number; caption: string };
 
 export const SCENES: Scene[] = [
   { start: 0, chapter: 0, caption: '메일에서 필요한 문장을 드래그해서 선택해요' },
-  { start: 3.0, chapter: 0, caption: '선택한 문장을 모아냥 입력창에 끌어다 놓아요' },
-  { start: 5.5, chapter: 1, caption: '입력창에 들어가면 고양이가 먹이를 받아요' },
-  { start: 7.9, chapter: 1, caption: '잠시 후 할 일 카드가 생겨요. 날짜가 없어 ‘날짜 없음’으로 표시돼요' },
-  { start: 10.0, chapter: 2, caption: '며칠 뒤 카톡으로 마감일 연락이 와요' },
-  { start: 11.6, chapter: 2, caption: '카톡 메시지는 복사해서' },
-  { start: 13.4, chapter: 2, caption: '입력창에 붙여넣고' },
-  { start: 15.2, chapter: 2, caption: '먹이주기를 눌러요' },
-  { start: 17.4, chapter: 2, caption: '날짜만 담긴 카드는 ‘할 일 없음’으로 표시돼요' },
-  { start: 19.2, chapter: 3, caption: '날짜 카드를 할 일 카드 위로 끌어와 합쳐요' },
-  { start: 21.4, chapter: 3, caption: '하나로 합쳐지며 빠진 정보가 모두 채워져요' },
-  { start: 24.0, chapter: 4, caption: '완성된 일정은 ‘채워 주세요’에서 빠지고 캘린더 23일에 표시돼요' },
+  { start: 2.6, chapter: 0, caption: '선택한 문장을 모아냥 입력창에 끌어다 놓아요' },
+  { start: 4.75, chapter: 1, caption: '놓는 순간 고양이가 먹이를 받고 할 일 카드가 바로 생겨요' },
+  { start: 6.0, chapter: 1, caption: '날짜가 없어서 ‘날짜 없음’으로 표시돼요' },
+  { start: 8.0, chapter: 2, caption: '며칠 뒤 카톡으로 마감일 연락이 와요' },
+  { start: 9.6, chapter: 2, caption: '카톡 메시지는 복사해서' },
+  { start: 11.4, chapter: 2, caption: '입력창에 붙여넣고' },
+  { start: 13.2, chapter: 2, caption: '먹이주기를 눌러요' },
+  { start: 15.4, chapter: 2, caption: '날짜만 담긴 카드는 ‘할 일 없음’으로 표시돼요' },
+  { start: 17.2, chapter: 3, caption: '날짜 카드를 할 일 카드 위로 끌어와 합쳐요' },
+  { start: 19.4, chapter: 3, caption: '하나로 합쳐지며 빠진 정보가 모두 채워져요' },
+  { start: 22.0, chapter: 4, caption: '완성된 일정은 ‘채워 주세요’에서 빠지고 캘린더 23일에 표시돼요' },
 ];
 
 export const CHAPTER_COUNT = 5;
-export const DURATION = 27.6;
+export const DURATION = 25.6;
 /** 반복할 때 0–0.45초는 막이 걷히는 구간이라, 처음 재생은 그 뒤에서 시작합니다 */
 export const FIRST_FRAME = 0.45;
 
@@ -56,7 +56,7 @@ export const CHAPTER_STARTS = Array.from(
 
 /** 일시정지 상태에서 챕터를 고르면 보여줄 대표 장면 (챕터가 끝나기 직전) */
 export const CHAPTER_POSTERS = CHAPTER_STARTS.map((_, c) =>
-  c + 1 < CHAPTER_COUNT ? CHAPTER_STARTS[c + 1] - 0.3 : 25.6,
+  c + 1 < CHAPTER_COUNT ? CHAPTER_STARTS[c + 1] - 0.3 : 23.6,
 );
 
 export function sceneIndexAt(t: number) {
@@ -68,34 +68,45 @@ export function sceneIndexAt(t: number) {
 /* ───────── 주요 시각 ───────── */
 
 const T = {
+  /* 메일 문장 선택 — 한 번의 드래그로 두 줄을 선택합니다 */
   selStart: 0.6,
-  sel1End: 1.5,
-  sel2End: 2.4,
-  ghostIn: 3.2,
-  dragEnd: 5.1,
-  drop: 5.3,
-  smile1: 5.6,
-  eat1: 7.6,
-  cardA: 7.9,
-  kakaoIn: 10.1,
-  rightClick: 12.45,
-  copyClick: 13.1,
-  pasteHintIn: 14.2,
-  pasted: 14.5,
-  pasteHintOut: 15.1,
-  feedPress: 16.0,
-  smile2: 16.15,
-  eat2: 17.1,
-  cardB: 17.4,
-  grab: 19.3,
-  receive: 20.1,
-  release: 20.9,
-  merge: 21.4,
-  fillStart: 21.8,
+  selEnd: 2.3,
+  /* 선택한 문장을 끌어서 입력창에 놓기 */
+  ghostIn: 2.75,
+  dragStart: 2.95,
+  dragEnd: 4.55,
+  drop: 4.75,
+  /* 끌어다 놓으면 바로 먹이를 받고 카드가 됩니다 (입력창에 글이 머물지 않음) */
+  smile1: 4.75,
+  cardA: 4.95,
+  smile1End: 6.0,
+  idleMove: 5.2,
+  /* 카톡 */
+  kakaoIn: 8.1,
+  toBubble: 9.6,
+  rightClick: 10.45,
+  menuHover: 10.85,
+  copyClick: 11.1,
+  toInput: 11.4,
+  pasteHintIn: 12.2,
+  pasted: 12.5,
+  pasteHintOut: 13.1,
+  toFeed: 13.2,
+  feedPress: 14.0,
+  smile2: 14.15,
+  eat2: 15.1,
+  cardB: 15.4,
+  /* 합치기 */
+  toCardB: 16.0,
+  grab: 17.3,
+  receive: 18.1,
+  release: 18.9,
+  merge: 19.4,
+  fillStart: 19.8,
   fillStep: 0.35,
-  cardExit: 24.2,
-  day23: 24.6,
-  fadeOut: 26.9,
+  cardExit: 22.2,
+  day23: 22.6,
+  fadeOut: 24.9,
 } as const;
 
 /* ───────── 보간 도구 ───────── */
@@ -105,6 +116,8 @@ const lerp = (a: number, b: number, u: number) => a + (b - a) * u;
 const progress = (t: number, a: number, b: number) => clamp01((t - a) / (b - a));
 const easeInOut = (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
 const easeOut = (u: number) => 1 - Math.pow(1 - u, 3);
+/** 시작과 끝만 살짝 부드럽고 가운데는 거의 일정한 속도 (사람이 끄는 느낌) */
+const easeInOutSoft = (u: number) => u - Math.sin(2 * Math.PI * u) / (2 * Math.PI) * 0.6;
 
 type Pt = { x: number; y: number };
 
@@ -157,7 +170,31 @@ export type HeroFrame = {
   veil: number;
 };
 
-const MAIL_TEXT = '고객사 제안서 초안 작성 부탁드립니다. 제품 소개와 견적을 포함해 주세요.';
+/** 끌고 가는 문장 상자에서 커서가 잡고 있는 지점 (상자 왼쪽 위 기준) */
+const GHOST_GRIP = { x: -14, y: -8 };
+
+/**
+ * 메일 선택 드래그의 커서 경로.
+ * 첫 줄 끝까지 오른쪽으로 간 뒤 둘째 줄 끝으로 내려갑니다.
+ * u(0–1)를 경로 길이에 맞춰 나눠서 속도가 일정하게 유지됩니다.
+ */
+function selectionPath(u: number, start: Pt, end: Pt, line1Width: number): Pt {
+  const corner = { x: start.x + line1Width, y: start.y };
+  const lenA = line1Width;
+  const lenB = Math.hypot(end.x - corner.x, end.y - corner.y);
+  const s = u * (lenA + lenB);
+  if (s <= lenA) return { x: start.x + s, y: start.y };
+  return curve(corner, end, (s - lenA) / lenB, 0.25);
+}
+
+/** 커서 위치로 선택 영역을 계산합니다 (실제 텍스트 선택처럼) */
+function selectionFromCursor(c: Pt, line1Y: number, line2Y: number, m: Measures): [number, number] {
+  const onLine2 = c.y >= (line1Y + line2Y) / 2;
+  const fromLeft = c.x - MAIL_BODY.x;
+  if (!onLine2) return [clamp01(fromLeft / m.line1), 0];
+  return [1, clamp01(fromLeft / m.line2)];
+}
+
 const CHAT_TEXT = '제안서 초안 마감은 10월 23일 오후 3시까지 부탁드립니다.';
 
 /** 날짜 카드를 할 일 카드 위로 끌어올리는 거리 (카드 높이 + 간격 − 겹침) */
@@ -166,16 +203,16 @@ const CARD_B_LIFT = { x: 10, y: -(APP_POINTS.cardHeight + APP_POINTS.cardGap) + 
 export function frameAt(t: number, m: Measures): HeroFrame {
   const scene = sceneIndexAt(t);
 
-  /* 메일 선택 */
-  const p1 = easeInOut(progress(t, T.selStart, T.sel1End));
-  const p2 = easeInOut(progress(t, T.sel1End + 0.05, T.sel2End));
-  const selectionOn = t >= T.selStart && t < T.drop;
+  /* 메일 선택: 커서가 한 번에 움직이고, 선택 영역은 커서 위치에서 계산합니다 */
   const line1Y = MAIL_BODY.y + MAIL_BODY.lineHeight / 2;
   const line2Y = line1Y + MAIL_BODY.lineGap;
-
-  /* 커서가 지나가는 점들 */
   const selStartPt: Pt = { x: MAIL_BODY.x - 1, y: line1Y };
   const selEndPt: Pt = { x: MAIL_BODY.x + m.line2, y: line2Y };
+  const selectionOn = t >= T.selStart && t < T.drop;
+  const selCursor = selectionPath(easeInOut(progress(t, T.selStart, T.selEnd)), selStartPt, selEndPt, m.line1);
+  const selection = selectionFromCursor(selCursor, line1Y, line2Y, m);
+
+  /* 커서가 지나가는 점들 */
   const dropPt = toStage({ x: APP_POINTS.input.x + 70, y: APP_POINTS.input.y + 44 });
   const idlePt = toStage({ x: 1120, y: 560 });
   const bubblePt: Pt = { x: 193, y: 429 };
@@ -188,28 +225,24 @@ export function frameAt(t: number, m: Measures): HeroFrame {
   let cursor: Pt;
   if (t < T.selStart) {
     cursor = curve({ x: selStartPt.x + 60, y: selStartPt.y + 40 }, selStartPt, easeOut(progress(t, 0, T.selStart)));
-  } else if (t < T.ghostIn) {
-    // 선택 영역 끝을 따라갑니다
-    if (t < T.sel1End) cursor = { x: MAIL_BODY.x + m.line1 * p1, y: line1Y };
-    else {
-      const drop = easeOut(clamp01(p2 * 5));
-      cursor = { x: lerp(MAIL_BODY.x + m.line1, MAIL_BODY.x, drop) + m.line2 * p2, y: lerp(line1Y, line2Y, drop) };
-    }
+  } else if (t < T.dragStart) {
+    cursor = selCursor;
   } else if (t < T.drop) {
-    cursor = curve(selEndPt, dropPt, easeInOut(progress(t, T.ghostIn + 0.2, T.dragEnd)), -0.22);
-  } else if (t < 11.6) {
-    cursor = curve(dropPt, idlePt, easeInOut(progress(t, T.drop + 0.6, T.drop + 1.8)), 0.1);
-  } else if (t < 12.6) {
-    cursor = curve(idlePt, bubblePt, easeInOut(progress(t, 11.6, 12.4)), 0.2);
-  } else if (t < 13.4) {
-    cursor = curve(bubblePt, copyPt, easeInOut(progress(t, 12.6, 12.95)), 0.1);
-  } else if (t < 15.2) {
-    cursor = curve(copyPt, inputPt, easeInOut(progress(t, 13.4, 14.2)), -0.15);
-  } else if (t < 17.6) {
-    cursor = curve(inputPt, feedPt, easeInOut(progress(t, 15.2, 15.9)), 0.25);
+    // 끄는 동안은 처음부터 끝까지 같은 곡선 위를 고르게 움직입니다
+    cursor = curve(selEndPt, dropPt, easeInOutSoft(progress(t, T.dragStart, T.dragEnd)), -0.12);
+  } else if (t < T.toBubble) {
+    cursor = curve(dropPt, idlePt, easeInOut(progress(t, T.idleMove, T.idleMove + 1.1)), 0.1);
+  } else if (t < T.rightClick + 0.15) {
+    cursor = curve(idlePt, bubblePt, easeInOut(progress(t, T.toBubble, T.rightClick - 0.05)), 0.2);
+  } else if (t < T.toInput) {
+    cursor = curve(bubblePt, copyPt, easeInOut(progress(t, T.rightClick + 0.15, T.menuHover + 0.1)), 0.1);
+  } else if (t < T.toFeed) {
+    cursor = curve(copyPt, inputPt, easeInOut(progress(t, T.toInput, T.pasteHintIn)), -0.15);
+  } else if (t < T.toCardB) {
+    cursor = curve(inputPt, feedPt, easeInOut(progress(t, T.toFeed, T.feedPress - 0.1)), 0.25);
   } else if (t < T.grab) {
-    cursor = curve(feedPt, cardBGrab, easeInOut(progress(t, 18.0, 18.8)), 0.2);
-  } else if (t < 24.2) {
+    cursor = curve(feedPt, cardBGrab, easeInOut(progress(t, T.toCardB, T.toCardB + 0.8)), 0.2);
+  } else if (t < T.cardExit) {
     const u = easeInOut(progress(t, T.grab + 0.1, T.release - 0.2));
     cursor = {
       x: cardBGrab.x + CARD_B_LIFT.x * APP_ON_STAGE.scale * u,
@@ -220,22 +253,28 @@ export function frameAt(t: number, m: Measures): HeroFrame {
       x: cardBGrab.x + CARD_B_LIFT.x * APP_ON_STAGE.scale,
       y: cardBGrab.y + CARD_B_LIFT.y * APP_ON_STAGE.scale,
     };
-    cursor = curve(from, day23Pt, easeInOut(progress(t, 24.2, 25.1)), -0.18);
+    cursor = curve(from, day23Pt, easeInOut(progress(t, T.cardExit, T.cardExit + 0.9)), -0.18);
   }
 
   const pressed =
-    (t >= T.selStart - 0.05 && t < T.drop) ||
+    (t >= T.selStart - 0.05 && t < T.selEnd + 0.1) ||
+    (t >= T.ghostIn && t < T.drop) ||
     (t >= T.rightClick && t < T.rightClick + 0.12) ||
     (t >= T.copyClick && t < T.copyClick + 0.12) ||
     (t >= T.feedPress && t < T.feedPress + 0.15) ||
     (t >= T.grab && t < T.release);
 
-  /* 끌고 가는 문장 */
+  /* 끌고 가는 문장 — 커서에 붙어서 같이 움직이고, 놓으면 입력창으로 빨려 들어갑니다 */
   let ghost: HeroFrame['ghost'] = null;
-  if (t >= T.ghostIn && t < T.drop + 0.15) {
-    const fadeIn = progress(t, T.ghostIn, T.ghostIn + 0.2);
-    const sink = progress(t, T.dragEnd, T.drop + 0.15);
-    ghost = { x: cursor.x + 6, y: cursor.y + 10, opacity: fadeIn * (1 - sink), scale: 1 - 0.15 * sink };
+  if (t >= T.ghostIn && t < T.cardA) {
+    const fadeIn = progress(t, T.ghostIn, T.dragStart);
+    const sink = easeOut(progress(t, T.drop, T.cardA));
+    ghost = {
+      x: lerp(cursor.x + GHOST_GRIP.x, dropPt.x - 30, sink),
+      y: lerp(cursor.y + GHOST_GRIP.y, dropPt.y - 10, sink),
+      opacity: fadeIn * (1 - sink),
+      scale: 1 - 0.35 * sink,
+    };
   }
 
   /* 카드 */
@@ -246,7 +285,7 @@ export function frameAt(t: number, m: Measures): HeroFrame {
   const count = (cardA === 'shown' || cardA === 'merged' ? 1 : 0) + (cardB === 'shown' ? 1 : 0);
 
   const menu: HeroFrame['menu'] =
-    t >= T.rightClick && t < T.copyClick + 0.15 ? (t >= 12.85 ? 'hover' : 'open') : 'hidden';
+    t >= T.rightClick && t < T.copyClick + 0.15 ? (t >= T.menuHover ? 'hover' : 'open') : 'hidden';
 
   const veil = Math.max(1 - progress(t, 0, 0.45), progress(t, T.fadeOut, DURATION));
 
@@ -254,11 +293,12 @@ export function frameAt(t: number, m: Measures): HeroFrame {
     scene,
     chapter: SCENES[scene].chapter,
     cursor: { ...cursor, pressed },
-    selection: selectionOn ? [p1, p2] : [0, 0],
+    selection: selectionOn ? selection : [0, 0],
     ghost,
-    inputActive: t >= T.dragEnd - 0.25 && t < T.drop + 0.1,
-    inputText: t >= T.drop && t < T.eat1 ? MAIL_TEXT : t >= T.pasted && t < T.eat2 ? CHAT_TEXT : '',
-    catSmile: (t >= T.smile1 && t < T.cardA) || (t >= T.smile2 && t < T.cardB),
+    inputActive: t >= T.dragEnd - 0.3 && t < T.drop + 0.1,
+    // 메일은 끌어다 놓자마자 카드가 되므로 입력창에 글이 남지 않습니다. 카톡만 붙여넣은 글이 보입니다.
+    inputText: t >= T.pasted && t < T.eat2 ? CHAT_TEXT : '',
+    catSmile: (t >= T.smile1 && t < T.smile1End) || (t >= T.smile2 && t < T.cardB),
     feedPressed: t >= T.feedPress && t < T.feedPress + 0.15,
     cardA,
     cardB,

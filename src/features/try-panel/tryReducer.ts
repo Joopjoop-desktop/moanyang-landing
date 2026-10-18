@@ -7,7 +7,8 @@
  * step 3: 두 카드를 합쳐 캘린더 23일에 표시
  *
  * phase는 단계 사이의 짧은 연출입니다.
- *   feeding — 입력창에 글이 들어가고 고양이가 먹는 중
+ *   feeding — 입력창에 글이 들어가고 고양이가 먹는 중 (버튼으로 넣을 때)
+ *   eating  — 끌어다 놓아 카드가 바로 생겼고, 고양이가 웃고 있는 중
  *   merging — 합친 카드가 펼쳐져 내용이 채워지는 중
  */
 
@@ -16,13 +17,13 @@ export type Method = 'button' | 'drag';
 
 export type TryState = {
   step: TryStep;
-  phase: 'idle' | 'feeding' | 'merging';
+  phase: 'idle' | 'feeding' | 'eating' | 'merging';
   /** 리셋할 때마다 바뀌어 카드 애니메이션을 새로 시작하게 합니다 */
   round: number;
 };
 
 export type TryAction =
-  | { type: 'insertMail' }
+  | { type: 'insertMail'; method: Method }
   | { type: 'pasteChat' }
   | { type: 'merge' }
   | { type: 'settle' }
@@ -33,13 +34,16 @@ export const initialTryState: TryState = { step: 0, phase: 'idle', round: 0 };
 export function tryReducer(state: TryState, action: TryAction): TryState {
   switch (action.type) {
     case 'insertMail':
-      return state.step === 0 && state.phase === 'idle' ? { ...state, phase: 'feeding' } : state;
+      if (state.step !== 0 || state.phase !== 'idle') return state;
+      // 끌어다 놓으면 바로 먹이를 받아 카드가 생깁니다
+      return action.method === 'drag' ? { ...state, step: 1, phase: 'eating' } : { ...state, phase: 'feeding' };
     case 'pasteChat':
       return state.step === 1 && state.phase === 'idle' ? { ...state, phase: 'feeding' } : state;
     case 'merge':
       return state.step === 2 && state.phase === 'idle' ? { ...state, phase: 'merging' } : state;
     case 'settle':
       if (state.phase === 'idle') return state;
+      if (state.phase === 'eating') return { ...state, phase: 'idle' };
       return { ...state, step: (state.step + 1) as TryStep, phase: 'idle' };
     case 'reset':
       return { step: 0, phase: 'idle', round: state.round + 1 };

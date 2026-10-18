@@ -121,8 +121,9 @@ export function HeroDemo() {
   const f = useMemo(() => frameAt(clock.t, measures), [clock.t, measures]);
   const scene = SCENES[f.scene];
 
+  // popLayout은 축소된 화면 안에서 위치 계산이 어긋나 튕기므로 쓰지 않습니다
   const list = (
-    <AnimatePresence initial={false} mode="popLayout">
+    <AnimatePresence initial={false}>
       {(f.cardA === 'shown' || f.cardA === 'merged') && (
         <TaskCard
           key="a"

@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react';
+import { forwardRef, useRef, type HTMLAttributes } from 'react';
 import { AnimatePresence, motion, type HTMLMotionProps, type MotionStyle } from 'motion/react';
 import { tagLabel, type Task } from '../../data/demo';
 import checkbox from '../../assets/figma/app-checkbox.svg';
@@ -29,19 +29,25 @@ export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskC
 ) {
   const fields = task.fields ?? [];
   const visibleCount = filledCount ?? fields.length;
+  // 처음부터 펼친 채로 그려진 카드(소개 섹션)는 내용 등장 연출을 생략합니다
+  const bornExpanded = useRef(expanded);
 
+  /*
+   * 주의: 이 카드는 transform: scale로 축소된 화면 안에서 쓰입니다.
+   * Motion의 layout 애니메이션은 조상의 scale을 고려하지 못해 위치가 튕기므로 쓰지 않고,
+   * 펼침은 CSS grid 높이 전환으로 처리합니다.
+   */
   return (
     <motion.div
       ref={ref}
-      layout
       className={[styles.card, expanded && styles.expanded, receiving && styles.receiving, lifted && styles.lifted, className]
         .filter(Boolean)
         .join(' ')}
       style={style}
       {...motionProps}
-      transition={{ layout: { duration: 0.45, ease: [0.22, 1, 0.36, 1] }, ...transition }}
+      transition={transition}
     >
-      <motion.div layout="position" className={styles.head}>
+      <div className={styles.head}>
         <img className={styles.checkbox} src={checkbox} width={20} height={20} alt="" />
         <div className={styles.headText}>
           <div className={styles.titleRow}>
@@ -51,9 +57,8 @@ export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskC
                 {task.tags.map((tag) => (
                   <motion.span
                     key={tag}
-                    layout
                     className={tag === 'no-date' ? styles.tagRed : styles.tagBlue}
-                    exit={{ opacity: 0, scale: 0.8 }}
+                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.15 } }}
                   >
                     {tagLabel[tag]}
                   </motion.span>
@@ -64,39 +69,43 @@ export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskC
           </div>
           <p className={styles.time}>{task.time}</p>
         </div>
-      </motion.div>
+      </div>
 
-      {expanded && (
-        <motion.div
-          className={styles.body}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          <dl className={styles.fields}>
-            {fields.map((f, i) => (
-              <motion.div
-                key={f.label}
-                className={styles.field}
-                initial={false}
-                animate={{ opacity: i < visibleCount ? 1 : 0, x: i < visibleCount ? 0 : -6 }}
-                transition={{ duration: 0.3 }}
-              >
-                <dt>{f.label}</dt>
-                <dd>{f.value}</dd>
-              </motion.div>
-            ))}
-          </dl>
-          <span className={styles.addChip} aria-hidden="true">
-            추가
-            <img src={plus} width={20} height={20} alt="" />
-          </span>
-          <div className={styles.divider} />
-          <span className={styles.deleteBtn} aria-hidden="true">
-            삭제하기
-          </span>
-        </motion.div>
-      )}
+      {/* 접힌 카드에도 자리를 만들어 두어야 펼칠 때 높이 전환이 일어납니다 */}
+      <div className={styles.bodyWrap}>
+        <div className={styles.bodyClip}>
+          {expanded && fields.length > 0 && (
+            <div className={styles.body}>
+              <dl className={styles.fields}>
+                {fields.map((f, i) => {
+                  const shown = i < visibleCount;
+                  return (
+                    <motion.div
+                      key={f.label}
+                      className={styles.field}
+                      initial={bornExpanded.current ? false : { opacity: 0, x: -6 }}
+                      animate={{ opacity: shown ? 1 : 0, x: shown ? 0 : -6 }}
+                      // 한꺼번에 채울 때는 위에서부터 차례로 나타납니다
+                      transition={{ duration: 0.3, delay: filledCount === undefined ? 0.15 + i * 0.12 : 0 }}
+                    >
+                      <dt>{f.label}</dt>
+                      <dd>{f.value}</dd>
+                    </motion.div>
+                  );
+                })}
+              </dl>
+              <span className={styles.addChip} aria-hidden="true">
+                추가
+                <img src={plus} width={20} height={20} alt="" />
+              </span>
+              <div className={styles.divider} />
+              <span className={styles.deleteBtn} aria-hidden="true">
+                삭제하기
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
     </motion.div>
   );
 });

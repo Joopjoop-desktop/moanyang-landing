@@ -94,6 +94,28 @@
   color: var(--color-gray-g70);
 }
 
+/* 펼침: 0fr → 1fr 높이 전환 */
+.bodyWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.expanded .bodyWrap {
+  grid-template-rows: 1fr;
+}
+
+.bodyClip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bodyWrap {
+    transition: none;
+  }
+}
+
 .body {
   display: flex;
   flex-direction: column;
