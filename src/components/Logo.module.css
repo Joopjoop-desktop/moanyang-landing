@@ -1,0 +1,25 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cat {
+  width: 36px;
+  height: 34px;
+  object-fit: contain;
+  object-position: top;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  color: var(--color-text-primary);
+}
+
+.en {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+}

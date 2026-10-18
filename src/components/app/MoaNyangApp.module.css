@@ -1,0 +1,191 @@
+/* Figma Main2_2 — 모든 좌표는 1336 × 824 기준 */
+.app {
+  position: relative;
+  width: 1336px;
+  height: 824px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--color-gray-g20);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  color: var(--color-gray-g100);
+  user-select: none;
+}
+
+.titlebar {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-main-black);
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-gray-g00);
+}
+
+.close {
+  position: absolute;
+  right: 28px;
+  top: 16px;
+}
+
+.monthBar {
+  position: absolute;
+  left: 28px;
+  top: 76px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.month {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 27px;
+  color: #000;
+}
+
+.navGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navBtn,
+.todayBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--color-gray-g20);
+  filter: drop-shadow(0 2px 2px rgba(42, 42, 42, 0.15));
+}
+
+.navBtn {
+  width: 28px;
+}
+
+.todayBtn {
+  padding: 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-gray-g80);
+}
+
+.calendar {
+  position: absolute;
+  left: 28px;
+  top: 124px;
+}
+
+.sideHead {
+  position: absolute;
+  left: 918px;
+  top: 78px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sideTitle {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 25px;
+}
+
+.count {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.cat {
+  position: absolute;
+  left: 1232px;
+  top: 64px;
+  width: 76px;
+  height: 68px;
+}
+
+.input {
+  position: absolute;
+  left: 918px;
+  top: 124px;
+  width: 390px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 32px 10px 12px;
+  border-radius: 8px;
+  background: var(--color-gray-g00);
+  box-shadow: 0 2px 6px rgba(42, 42, 42, 0.1);
+  outline: 3px solid transparent;
+  transition:
+    outline-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.inputActive {
+  outline-color: var(--color-main-blue);
+  box-shadow: 0 6px 18px rgba(22, 75, 238, 0.18);
+}
+
+.inputArea {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.placeholder,
+.inputText {
+  min-height: 22px;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+}
+
+.placeholder {
+  color: var(--color-gray-g60);
+}
+
+.inputText {
+  color: #000;
+}
+
+.inputLine {
+  height: 1px;
+  background: var(--color-gray-g40);
+}
+
+.feedBtn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-main-black);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  color: var(--color-gray-g00);
+  transition: transform 0.12s ease;
+}
+
+.feedPressed {
+  transform: scale(0.92);
+}
+
+.list {
+  position: absolute;
+  left: 918px;
+  top: 292px;
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}

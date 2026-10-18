@@ -1,0 +1,100 @@
+.calendar {
+  width: 868px;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 124px);
+  height: 19px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 19px;
+  text-align: center;
+  color: var(--color-gray-g90);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 124px);
+  grid-auto-rows: 124px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(42, 42, 42, 0.1);
+  /* 그림자가 잘리지 않도록 grid 자체는 overflow만 둡니다 */
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 10px 4px;
+  background: var(--color-gray-g00);
+}
+
+.cellMuted {
+  background: var(--color-gray-g30);
+}
+
+.date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  margin-left: 6px;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--color-gray-g100);
+}
+
+.muted {
+  color: var(--color-gray-g50);
+}
+
+.sun {
+  color: var(--color-main-red);
+}
+
+.sat {
+  color: var(--color-main-blue);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.event,
+.eventDone {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 4px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: normal;
+}
+
+.event {
+  background: var(--color-gray-g00);
+  border: 1px solid var(--color-gray-g40);
+  color: #000;
+}
+
+.eventDone {
+  background: var(--color-gray-g40);
+  border: 1px solid var(--color-gray-g40);
+  color: var(--color-gray-g60);
+  text-decoration: line-through;
+}
+
+.eventText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,393 @@
+/* 무대 내부 좌표는 Figma 'Hero Demo' (1136 × 607.6) 그대로입니다 */
+.demo {
+  overflow: hidden;
+  border: 1px solid var(--color-border-default);
+  border-radius: 16px;
+  background: var(--color-bg-surface);
+}
+
+.stageWrap {
+  background: var(--demo-stage-bg);
+}
+
+.stage {
+  position: relative;
+  width: 1136px;
+  height: 607.63px;
+  overflow: hidden;
+  background: var(--demo-stage-bg);
+  color: var(--color-text-body);
+  user-select: none;
+  pointer-events: none;
+}
+
+.appSlot {
+  position: absolute;
+}
+
+/* ───── 메일 창 ───── */
+.mail,
+.kakao {
+  position: absolute;
+  left: 15.85px;
+  width: 369.86px;
+  height: 217.95px;
+  overflow: hidden;
+  border-radius: 9.25px;
+  box-shadow: 0 10.57px 23.78px rgba(0, 0, 0, 0.14);
+}
+
+.mail {
+  top: 72.65px;
+  border: 0.66px solid var(--color-border-default);
+  background: var(--color-gray-g00);
+}
+
+.mailBar,
+.kakaoBar {
+  display: flex;
+  align-items: center;
+  gap: 7.93px;
+  height: 33.02px;
+  padding: 0 11.89px;
+  font-size: 10.57px;
+  line-height: normal;
+}
+
+.mailBar {
+  background: var(--demo-mail-titlebar);
+  color: var(--color-text-secondary);
+}
+
+.mailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6.6px;
+  padding: 14.53px 17.17px 0;
+}
+
+.mailMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 15px;
+  font-size: 10.57px;
+  color: var(--color-text-body);
+}
+
+.mailTime {
+  font-size: 9.25px;
+  color: var(--color-text-tertiary);
+}
+
+.mailSubject {
+  height: 20px;
+  font-size: 13.87px;
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--color-text-primary);
+}
+
+.mailBody {
+  position: relative;
+  height: 71.33px;
+}
+
+.mailLine {
+  position: absolute;
+  left: 0;
+  font-size: 12.55px;
+  line-height: 22.46px;
+  white-space: nowrap;
+  color: var(--color-text-body);
+}
+
+.selection {
+  position: absolute;
+  left: -1.98px;
+  height: 19.81px;
+  border-radius: 2.64px;
+  background: var(--demo-selection);
+}
+
+/* ───── 카톡 창 ───── */
+.kakao {
+  top: 336.84px;
+  background: var(--demo-kakao-bg);
+}
+
+.kakaoBar {
+  background: var(--demo-kakao-titlebar);
+  color: var(--color-text-body);
+}
+
+.kakaoApp {
+  font-size: 8.59px;
+  color: var(--color-text-secondary);
+}
+
+.chat {
+  display: flex;
+  align-items: flex-start;
+  gap: 7.93px;
+  padding: 15.85px 14.53px 0;
+}
+
+.chatCol {
+  display: flex;
+  flex-direction: column;
+  gap: 3.96px;
+}
+
+.chatName {
+  font-size: 9.91px;
+  line-height: normal;
+  color: var(--color-text-body);
+}
+
+.chatRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 5.28px;
+}
+
+.bubble {
+  width: 239.09px;
+  padding: 7.93px 10.57px;
+  border-radius: 2.64px 10.57px 10.57px 10.57px;
+  background: var(--color-gray-g00);
+  font-size: 11.89px;
+  line-height: 17.83px;
+  color: var(--color-text-primary);
+  outline: 1.32px solid transparent;
+  transition: outline-color 0.15s ease;
+}
+
+.bubbleActive {
+  outline-color: var(--color-main-blue);
+}
+
+.chatTime {
+  font-size: 8.59px;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+/* ───── 우클릭 메뉴 · 붙여넣기 안내 · 끌고 가는 문장 ───── */
+.menu {
+  position: absolute;
+  left: 197.48px;
+  top: 435.25px;
+  width: 99.07px;
+  display: flex;
+  flex-direction: column;
+  padding: 3.96px;
+  border: 0.66px solid var(--color-border-default);
+  border-radius: 6.6px;
+  background: var(--color-gray-g00);
+  box-shadow: 0 6.6px 15.85px rgba(0, 0, 0, 0.16);
+  font-size: 11.23px;
+  animation: pop 0.14s var(--ease-out);
+}
+
+.menu span {
+  padding: 5.28px 9.25px;
+  border-radius: 3.96px;
+  color: var(--color-text-body);
+}
+
+.menu .menuActive {
+  background: var(--demo-menu-active);
+  color: var(--color-main-blue);
+}
+
+.pasteHint {
+  position: absolute;
+  left: 857.28px;
+  top: 71.33px;
+  display: flex;
+  align-items: center;
+  gap: 6.6px;
+  padding: 6.6px 9.25px;
+  border-radius: 6.6px;
+  background: var(--color-main-black);
+  font-size: 9.91px;
+  white-space: nowrap;
+  color: var(--color-gray-g00);
+  animation: pop 0.18s var(--ease-out);
+}
+
+.key {
+  font-size: 9.25px;
+  font-weight: 500;
+  color: var(--demo-key-text);
+}
+
+.ghost {
+  position: absolute;
+  width: 216.64px;
+  padding: 7.93px 9.25px;
+  border: 1.32px solid var(--color-main-blue);
+  border-radius: 6.6px;
+  background: var(--color-gray-g00);
+  box-shadow: 0 9.25px 19.81px rgba(0, 0, 0, 0.22);
+  font-size: 10.57px;
+  line-height: 15.85px;
+  color: var(--color-text-body);
+  transform-origin: 0 0;
+}
+
+.cursor {
+  position: absolute;
+  z-index: 5;
+  transform-origin: 4.68px 2.81px;
+  transition: transform 0.08s ease;
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: var(--demo-stage-bg);
+  pointer-events: none;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(-3px) scale(0.96);
+  }
+}
+
+/* ───── 자막 막대 ───── */
+.caption {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 52px;
+  padding: 10px 14px 10px 21px;
+  border-top: 1px solid var(--color-border-default);
+  background: var(--color-bg-surface);
+}
+
+.captionIndex {
+  flex-shrink: 0;
+  font-size: 11.2px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--demo-caption-index);
+}
+
+.captionText {
+  flex: 1;
+  min-width: 0;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 보이는 막대는 4px이지만 누르는 영역은 24px 높이로 넉넉하게 둡니다 */
+.dot {
+  position: relative;
+  width: 24.5px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.dot::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 10px;
+  height: 3.96px;
+  border-radius: 2px;
+  background: var(--color-border-default);
+  transition:
+    background-color 0.2s ease,
+    left 0.2s ease,
+    right 0.2s ease;
+}
+
+.dotOn {
+  width: 32.4px;
+}
+
+.dotOn::before {
+  background: var(--color-main-black);
+}
+
+.dot:hover::before {
+  background: var(--color-gray-g50);
+}
+
+.dotOn:hover::before {
+  background: var(--color-main-black);
+}
+
+.playBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--color-border-default);
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+.playBtn:hover {
+  background: var(--color-gray-g20);
+}
+
+@media (max-width: 640px) {
+  .demo {
+    border-radius: 12px;
+  }
+
+  .caption {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 10px 10px 10px 14px;
+  }
+
+  .captionText {
+    order: 3;
+    flex-basis: 100%;
+    font-size: 14px;
+  }
+
+  .controls {
+    margin-left: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu,
+  .pasteHint {
+    animation: none;
+  }
+
+  .cursor,
+  .bubble,
+  .dot::before {
+    transition: none;
+  }
+}

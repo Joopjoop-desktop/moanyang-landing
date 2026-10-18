@@ -1,0 +1,304 @@
+.panel {
+  padding-bottom: 48px;
+}
+
+/* ───── 단계 표시 ───── */
+.stepper {
+  display: flex;
+  gap: 8px;
+}
+
+.step {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+}
+
+.stepCurrent {
+  padding: 11px 13px;
+  border: 2px solid var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+.stepDone {
+  color: var(--color-text-secondary);
+}
+
+.stepNum {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--color-bg-chip);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.stepCurrent .stepNum {
+  background: var(--color-bg-inverse);
+  color: var(--color-text-inverse);
+}
+
+.stepDone .stepNum {
+  background: var(--color-border-default);
+}
+
+.stepLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ───── 안내 막대 ───── */
+.nextBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inverse);
+}
+
+.key {
+  flex-shrink: 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--color-bg-surface);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.nextText {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-text-inverse);
+}
+
+.nextText:focus {
+  outline: none;
+}
+
+.nextActions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* ───── 받은 메시지 + 서비스 화면 ───── */
+.grid {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.inbox {
+  flex: 0 0 371px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inboxHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.inboxHead strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.message {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  background: var(--color-bg-surface);
+  transition:
+    opacity 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.2s ease;
+}
+
+.messageActive {
+  border-color: var(--color-accent-default);
+}
+
+.messageDone {
+  opacity: 0.5;
+}
+
+.messageLocked {
+  opacity: 0.55;
+}
+
+.draggable {
+  cursor: grab;
+}
+
+.dragging {
+  z-index: 10;
+  cursor: grabbing;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+}
+
+.draggableCard {
+  cursor: grab;
+}
+
+.draggableCard:active {
+  cursor: grabbing;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.source {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.source b {
+  margin-right: 3px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.time {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.subject {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.body {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-text-body);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.lockedHint {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+}
+
+.preview {
+  flex: 1;
+  min-width: 0;
+}
+
+.previewFrame {
+  border-radius: 9px;
+  box-shadow: 0 9px 20px rgba(0, 0, 0, 0.12);
+}
+
+.calendarNote {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  font-size: 14px;
+  color: var(--color-text-body);
+}
+
+@media (max-width: 1100px) {
+  .grid {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .inbox {
+    flex-basis: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .stepper {
+    gap: 6px;
+  }
+
+  .step {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px;
+    font-size: 12.5px;
+  }
+
+  .stepCurrent {
+    padding: 9px;
+  }
+
+  .stepLabel {
+    white-space: normal;
+  }
+
+  .nextBar {
+    flex-wrap: wrap;
+  }
+
+  .nextText {
+    flex-basis: calc(100% - 60px);
+    font-size: 14px;
+  }
+
+  .nextActions {
+    width: 100%;
+  }
+
+  .nextActions > * {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .message {
+    transition: none;
+  }
+}

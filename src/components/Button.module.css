@@ -1,0 +1,96 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  font-weight: 700;
+  line-height: normal;
+  white-space: nowrap;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Figma Button / SM: 높이 44, 좌우 16, 14px Bold, 모서리 9 */
+.sm {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+/* Figma Button / MD: 높이 48, 좌우 22, 16px Bold, 모서리 10 */
+.md {
+  height: 48px;
+  padding: 0 22px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+}
+
+.block {
+  width: 100%;
+}
+
+.primary {
+  background: var(--color-bg-inverse);
+  border-color: var(--color-bg-inverse);
+  color: var(--color-text-inverse);
+}
+
+.primary:hover {
+  background: var(--color-gray-g100);
+}
+
+.ghost {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+.ghost:hover {
+  background: var(--color-bg-surface);
+}
+
+.light {
+  background: var(--color-bg-surface);
+  border-color: var(--color-bg-surface);
+  color: var(--color-text-primary);
+}
+
+.light:hover {
+  background: var(--color-gray-g30);
+}
+
+.accent {
+  background: var(--color-accent-default);
+  border-color: var(--color-accent-default);
+  color: var(--color-text-primary);
+}
+
+.accent:hover {
+  background: color-mix(in srgb, var(--color-accent-default) 85%, var(--color-accent-strong));
+}
+
+.disabled {
+  background: var(--color-bg-disabled);
+  border-color: var(--color-bg-disabled);
+  color: var(--color-text-tertiary);
+  cursor: not-allowed;
+}
+
+.disabled:active {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}

@@ -1,0 +1,118 @@
+.hero {
+  padding-top: 72px;
+}
+
+.top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 48px;
+  padding-bottom: 56px;
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 0 1 635px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.title {
+  font-size: 68px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  color: var(--color-text-primary);
+}
+
+/* Figma 'Mark': 줄 높이 76 중 47~70 구간에 accent/mark 띠 */
+.marked {
+  background: linear-gradient(
+    transparent 61.8%,
+    var(--color-accent-mark) 61.8%,
+    var(--color-accent-mark) 92.1%,
+    transparent 92.1%
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.copy {
+  flex: 0 1 453px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.lede {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.fine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.fine img {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+  }
+
+  .headline,
+  .copy {
+    flex-basis: auto;
+    max-width: 635px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 40px;
+  }
+
+  .top {
+    padding-bottom: 36px;
+  }
+
+  .title {
+    font-size: clamp(36px, 10.5vw, 48px);
+  }
+
+  .lede {
+    font-size: 16px;
+  }
+
+  .fine {
+    align-items: flex-start;
+    font-size: 13px;
+  }
+
+  .fine img {
+    margin-top: 1px;
+  }
+}

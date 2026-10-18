@@ -1,0 +1,182 @@
+.section {
+  padding: 120px 0 40px;
+}
+
+.values {
+  border-top: 1px solid var(--color-border-default);
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 48px 0;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.copy {
+  flex: 0 0 453px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.num {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-accent-strong);
+}
+
+.valueTitle {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+}
+
+.desc {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.vignetteWrap {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+/* 기준 너비 635 — 좁은 화면에서는 Scaled가 비율대로 줄입니다 */
+.vignette {
+  width: 635px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-surface);
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.narrow {
+  flex: 0 0 216px;
+}
+
+.week {
+  flex: 0 0 303px;
+}
+
+.colLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+}
+
+.minis {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mini {
+  display: flex;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.mini b {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.arrow {
+  flex-shrink: 0;
+}
+
+.weekRow {
+  display: flex;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(42, 42, 42, 0.1);
+  overflow: hidden;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 60.6px;
+  height: 60.6px;
+  padding: 5px 3px;
+  background: var(--color-gray-g00);
+  font-size: 8px;
+  color: var(--color-gray-g100);
+}
+
+.day > span:first-child {
+  padding-left: 3px;
+}
+
+.dayEvent {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 0.5px solid var(--color-gray-g40);
+  border-radius: 4px;
+  font-size: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--color-main-black);
+}
+
+@media (max-width: 1100px) {
+  .value {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+
+  .copy {
+    flex-basis: auto;
+    max-width: 560px;
+  }
+
+  .vignetteWrap {
+    max-width: 635px;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-top: 80px;
+  }
+
+  .value {
+    padding: 36px 0;
+  }
+
+  .valueTitle {
+    font-size: 24px;
+  }
+}

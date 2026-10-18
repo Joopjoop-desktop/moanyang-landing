@@ -1,0 +1,16 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 24px;
+  flex-wrap: wrap;
+  padding-block: 56px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .footer {
+    flex-direction: column;
+    padding-block: 40px;
+  }
+}
