@@ -237,6 +237,22 @@
   box-shadow: 0 9px 20px rgba(0, 0, 0, 0.12);
 }
 
+/* 데스크톱 확대 보기: 서비스 화면 일부를 잘라 보여주므로, 잘린 왼쪽 캘린더가 자연스럽게 사라지도록 흐리게 처리 */
+.previewZoom {
+  border: 1px solid var(--color-border-default);
+  background: var(--color-gray-g20);
+}
+
+.previewZoom::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 1;
+  width: 72px;
+  background: linear-gradient(to right, var(--color-gray-g20), transparent);
+  pointer-events: none;
+}
+
 .calendarNote {
   margin-top: 12px;
   padding: 10px 14px;
@@ -255,6 +271,12 @@
 
   .inbox {
     flex-basis: auto;
+  }
+
+  /* 세로로 쌓일 때 확대 보기가 실제 크기(1배)보다 커지지 않도록 */
+  .preview {
+    width: 100%;
+    max-width: 824px;
   }
 }
 

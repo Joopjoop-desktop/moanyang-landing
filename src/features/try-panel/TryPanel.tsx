@@ -26,6 +26,12 @@ const followPointer = (dragging: boolean) =>
 /** 좁은 화면에서는 서비스 화면 중 '채워 주세요' 영역만 크게 보여줍니다 */
 const MOBILE_CROP = { x: 896, y: 56, w: 432, h: 470 };
 
+/**
+ * 데스크톱에서는 캘린더 오른쪽 세 칸(목·금·토 — 17일, 23일 포함)과 '채워 주세요' 영역만 잘라
+ * 크게 보여줍니다. 전체를 넣으면 0.55배로 줄어 글자가 너무 작아지기 때문입니다 (이 크롭은 약 0.9배).
+ */
+const DESKTOP_CROP = { x: 512, y: 60, w: 824, h: 720 };
+
 function useMedia(query: string) {
   const mq = typeof window !== 'undefined' ? window.matchMedia(query) : null;
   return useSyncExternalStore(
@@ -281,7 +287,12 @@ export function TryPanel() {
               {app}
             </Scaled>
           ) : (
-            <Scaled baseWidth={APP_WIDTH} baseHeight={APP_HEIGHT} className={styles.previewFrame}>
+            <Scaled
+              baseWidth={APP_WIDTH}
+              baseHeight={APP_HEIGHT}
+              crop={DESKTOP_CROP}
+              className={`${styles.previewFrame} ${styles.previewZoom}`}
+            >
               {app}
             </Scaled>
           )}

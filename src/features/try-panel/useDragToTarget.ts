@@ -20,14 +20,32 @@ export function useDragToTarget({ enabled, targetRef, onDrop, keepOffsetOnDrop =
   const [over, setOver] = useState(false);
   /** 마지막 드래그가 목표 위에 놓였는지 */
   const [dropped, setDropped] = useState(false);
-  const start = useRef<{ x: number; y: number; scale: number; id: number } | null>(null);
+  const start = useRef<{ x: number; y: number; scale: number; id: number; rect: DOMRect } | null>(null);
   const overRef = useRef(false);
 
+  /**
+   * 목표 위에 있는지 판단합니다.
+   * 커서가 목표 안에 있거나, 끌고 있는 요소가 목표와 충분히 겹치면(끄는 요소 면적의 20% 이상) 놓을 수 있습니다.
+   * 커서 위치만 보면 카드가 눈에 띄게 겹쳐 있어도 인정되지 않는 경우가 있어서입니다.
+   */
   const isOverTarget = (clientX: number, clientY: number) => {
     const r = targetRef.current?.getBoundingClientRect();
-    if (!r) return false;
+    const s = start.current;
+    if (!r || !s) return false;
     const pad = 12;
-    return clientX >= r.left - pad && clientX <= r.right + pad && clientY >= r.top - pad && clientY <= r.bottom + pad;
+    if (clientX >= r.left - pad && clientX <= r.right + pad && clientY >= r.top - pad && clientY <= r.bottom + pad) {
+      return true;
+    }
+    // 끌기 시작할 때의 위치를 커서 이동량만큼 옮겨, 지금 끄는 요소가 있는 곳을 계산합니다
+    const dx = clientX - s.x;
+    const dy = clientY - s.y;
+    const left = Math.max(r.left, s.rect.left + dx);
+    const right = Math.min(r.right, s.rect.right + dx);
+    const top = Math.max(r.top, s.rect.top + dy);
+    const bottom = Math.min(r.bottom, s.rect.bottom + dy);
+    if (right <= left || bottom <= top) return false;
+    const overlap = (right - left) * (bottom - top);
+    return overlap / (s.rect.width * s.rect.height) >= 0.2;
   };
 
   const end = useCallback((keepOffset = false) => {
@@ -47,8 +65,9 @@ export function useDragToTarget({ enabled, targetRef, onDrop, keepOffsetOnDrop =
     if (!enabled || e.pointerType === 'touch' || e.button !== 0) return;
     if ((e.target as HTMLElement).closest('button, a, input')) return;
     const el = e.currentTarget;
-    const scale = el.getBoundingClientRect().width / el.offsetWidth || 1;
-    start.current = { x: e.clientX, y: e.clientY, scale, id: e.pointerId };
+    const rect = el.getBoundingClientRect();
+    const scale = rect.width / el.offsetWidth || 1;
+    start.current = { x: e.clientX, y: e.clientY, scale, id: e.pointerId, rect };
     setDropped(false);
     setOffset({ x: 0, y: 0 });
     el.setPointerCapture(e.pointerId);
@@ -75,6 +94,7 @@ export function useDragToTarget({ enabled, targetRef, onDrop, keepOffsetOnDrop =
     if (!s || s.id !== e.pointerId) return;
     const dropped = dragging && isOverTarget(e.clientX, e.clientY);
     setDropped(dropped);
+    // end()가 start를 지우므로 판정을 먼저 끝낸 뒤 정리합니다
     end(dropped && keepOffsetOnDrop);
     if (dropped) onDrop();
   };

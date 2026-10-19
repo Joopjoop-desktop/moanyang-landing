@@ -17,6 +17,11 @@ type TaskCardProps = {
   lifted?: boolean;
   /** 펼친 내용 중 앞에서부터 몇 개를 보여줄지 (채워지는 연출용) */
   filledCount?: number;
+  /**
+   * md: 서비스 화면 크기 (390px 기준, 축소된 화면 안에서 사용)
+   * sm: 소개 섹션용 작은 카드 — 줄이지 않고 실제 글자 크기(제목 13px, 태그 11px)로 그립니다
+   */
+  size?: 'md' | 'sm';
   style?: MotionStyle;
   className?: string;
 } & Omit<HTMLMotionProps<'div'>, 'children' | 'style'> &
@@ -24,7 +29,7 @@ type TaskCardProps = {
 
 /** Figma Main2_2 '채워 주세요' 목록의 카드 (기준 크기 390px) */
 export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskCard(
-  { task, expanded, receiving, lifted, filledCount, style, className, transition, ...motionProps },
+  { task, expanded, receiving, lifted, filledCount, size = 'md', style, className, transition, ...motionProps },
   ref,
 ) {
   const fields = task.fields ?? [];
@@ -40,7 +45,7 @@ export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskC
   return (
     <motion.div
       ref={ref}
-      className={[styles.card, expanded && styles.expanded, receiving && styles.receiving, lifted && styles.lifted, className]
+      className={[styles.card, size === 'sm' && styles.sm, expanded && styles.expanded, receiving && styles.receiving, lifted && styles.lifted, className]
         .filter(Boolean)
         .join(' ')}
       style={style}
@@ -65,7 +70,7 @@ export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskC
                 ))}
               </AnimatePresence>
             </div>
-            <img src={expanded ? chevronUp : chevronDown} width={20} height={20} alt="" />
+            <img className={styles.chevron} src={expanded ? chevronUp : chevronDown} width={20} height={20} alt="" />
           </div>
           <p className={styles.time}>{task.time}</p>
         </div>

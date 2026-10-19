@@ -104,6 +104,11 @@
   color: var(--color-text-primary);
 }
 
+/* 합친 카드(sm)가 펼쳐진 높이만큼 자리를 미리 잡아 둡니다 */
+.mergedSlot {
+  min-height: 222px;
+}
+
 .cards {
   display: flex;
   flex-direction: column;
@@ -126,10 +131,11 @@
   flex-direction: column;
   gap: 3px;
   width: 60.6px;
-  height: 60.6px;
+  height: 66px;
   padding: 5px 3px;
   background: var(--color-gray-g00);
-  font-size: 8px;
+  font-size: 11px;
+  line-height: 13px;
   color: var(--color-gray-g100);
 }
 
@@ -137,17 +143,23 @@
   padding-left: 3px;
 }
 
+/* 칸이 좁아 일정 이름은 두 줄까지 줄바꿈합니다 ('제안서 / 초안') */
 .dayEvent {
   display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 2px;
-  border: 0.5px solid var(--color-gray-g40);
+  align-items: flex-start;
+  gap: 3px;
+  padding: 2px 3px;
+  border: 1px solid var(--color-gray-g40);
   border-radius: 4px;
-  font-size: 6px;
-  white-space: nowrap;
+  font-size: 10px;
+  line-height: 12px;
   overflow: hidden;
   color: var(--color-main-black);
+}
+
+.dayEvent img {
+  flex-shrink: 0;
+  margin-top: 3px;
 }
 
 @media (max-width: 1100px) {

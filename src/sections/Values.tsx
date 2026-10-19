@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { motion, useReducedMotion, type Variants } from 'motion/react';
 import { SectionHead } from '../components/SectionHead';
 import { Scaled } from '../components/Scaled';
 import { TaskCard } from '../components/app/TaskCard';
@@ -6,9 +7,6 @@ import { mergedTask, taskFromChat, taskFromMail, type Task } from '../data/demo'
 import arrow from '../assets/figma/arrow-right.svg';
 import eventTodo from '../assets/figma/event-todo.svg';
 import styles from './Values.module.css';
-
-/** 소개용 카드는 서비스 화면 카드를 0.66배로 줄여 씁니다 (Figma 257.4 / 390) */
-const CARD_SCALE = 0.66;
 
 const sampleCards: Task[] = [
   { id: 'v1', title: '제안서 초안 작성', time: '10/15 09:12', tags: ['no-date'] },
@@ -21,13 +19,57 @@ const pendingCards: Task[] = [
   { id: 'p2', title: '회의록 공유', time: '10/17 11:30', tags: ['no-task'] },
 ];
 
-function Cards({ tasks, scale = CARD_SCALE }: { tasks: Task[]; scale?: number }) {
+/* ───────── 등장 연출 ─────────
+ * 각 행이 화면에 보이면 한 번만 '전 → 후' 순서로 나타납니다.
+ * 행(li)이 hidden → shown 으로 바뀌면 아래 변형이 자식들에게 전달되고, custom 값은 지연 시간(초)입니다.
+ * 동작 줄이기 설정이면 처음부터 완성된 상태로 보여줍니다.
+ */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  shown: (delay = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE, delay } }),
+};
+
+const slideIn: Variants = {
+  hidden: { opacity: 0, x: -14 },
+  shown: (delay = 0) => ({ opacity: 1, x: 0, transition: { duration: 0.4, ease: EASE, delay } }),
+};
+
+const pop: Variants = {
+  hidden: { opacity: 0, y: 8, scale: 0.97 },
+  shown: (delay = 0) => ({ opacity: 1, y: 0, scale: 1, transition: { duration: 0.4, ease: EASE, delay } }),
+};
+
+/** 화살표: 흐리게 있다가 오른쪽으로 한 번 '툭' */
+const nudge: Variants = {
+  hidden: { opacity: 0.25, x: -6 },
+  shown: (delay = 0) => ({
+    opacity: 1,
+    x: [-6, 5, 0],
+    transition: { duration: 0.5, ease: EASE, delay, times: [0, 0.6, 1] },
+  }),
+};
+
+/** 행이 보이기 시작한 뒤 delay(ms)가 지나면 켜지는 값 — 카드 펼침처럼 상태로 바꿔야 하는 연출용 */
+function useRevealAfter(delay: number, reduce: boolean) {
+  const [on, setOn] = useState(reduce);
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const trigger = () => {
+    if (on || timer.current !== undefined) return;
+    timer.current = window.setTimeout(() => setOn(true), delay);
+  };
+  return [on, trigger] as const;
+}
+
+function Cards({ tasks, delay = 0 }: { tasks: Task[]; delay?: number }) {
   return (
     <div className={styles.cards}>
-      {tasks.map((t) => (
-        <Scaled key={t.id} baseWidth={390} scale={scale}>
-          <TaskCard task={t} />
-        </Scaled>
+      {tasks.map((t, i) => (
+        <motion.div key={t.id} variants={pop} custom={delay + i * 0.12}>
+          <TaskCard task={t} size="sm" />
+        </motion.div>
       ))}
     </div>
   );
@@ -42,8 +84,18 @@ function Column({ label, children, className }: { label: string; children: React
   );
 }
 
-function Arrow() {
-  return <img className={styles.arrow} src={arrow} width={28} height={28} alt="" />;
+function Arrow({ delay }: { delay: number }) {
+  return (
+    <motion.img
+      className={styles.arrow}
+      src={arrow}
+      width={28}
+      height={28}
+      alt=""
+      variants={nudge}
+      custom={delay}
+    />
+  );
 }
 
 function Vignette({ children, label }: { children: ReactNode; label: string }) {
@@ -56,22 +108,53 @@ function Vignette({ children, label }: { children: ReactNode; label: string }) {
   );
 }
 
-function Value({ num, title, desc, children }: { num: string; title: ReactNode; desc: string; children: ReactNode }) {
+function Value({
+  num,
+  title,
+  desc,
+  children,
+  onEnter,
+}: {
+  num: string;
+  title: ReactNode;
+  desc: string;
+  children: ReactNode;
+  onEnter?: () => void;
+}) {
+  const reduce = useReducedMotion() ?? false;
   return (
-    <li className={styles.value}>
+    <motion.li
+      className={styles.value}
+      initial={reduce ? false : 'hidden'}
+      whileInView="shown"
+      viewport={{ once: true, amount: 0.35 }}
+      onViewportEnter={onEnter}
+    >
       <div className={styles.copy}>
-        <p className={styles.num}>{num}</p>
-        <h3 className={styles.valueTitle}>{title}</h3>
-        <p className={styles.desc}>{desc}</p>
+        <motion.p className={styles.num} variants={fadeUp} custom={0}>
+          {num}
+        </motion.p>
+        <motion.h3 className={styles.valueTitle} variants={fadeUp} custom={0.06}>
+          {title}
+        </motion.h3>
+        <motion.p className={styles.desc} variants={fadeUp} custom={0.12}>
+          {desc}
+        </motion.p>
       </div>
       {children}
-    </li>
+    </motion.li>
   );
 }
 
 const WEEK = [19, 20, 21, 22, 23];
 
 export function Values() {
+  const reduce = useReducedMotion() ?? false;
+  // 02: 오른쪽 합친 카드가 접힌 채로 나타났다가 펼쳐지며 내용이 채워집니다
+  const [merged, revealMerged] = useRevealAfter(900, reduce);
+  // 03: 왼쪽 카드가 보인 뒤 23일 칸에 일정이 올라갑니다
+  const [placed, revealPlaced] = useRevealAfter(950, reduce);
+
   return (
     <section id="how" className={styles.section} aria-labelledby="how-title">
       <div className="container">
@@ -91,20 +174,20 @@ export function Values() {
             <Vignette label="메일과 메신저 메시지 세 개가 모아냥 카드 세 장으로 정리된 모습">
               <Column label="메일 · 메신저">
                 <div className={styles.minis}>
-                  <p className={styles.mini}>
+                  <motion.p className={styles.mini} variants={slideIn} custom={0.1}>
                     <b>메일</b>제안서 초안 작성 부탁…
-                  </p>
-                  <p className={styles.mini}>
+                  </motion.p>
+                  <motion.p className={styles.mini} variants={slideIn} custom={0.2}>
                     <b>카톡</b>회의록 공유 부탁해요…
-                  </p>
-                  <p className={styles.mini}>
+                  </motion.p>
+                  <motion.p className={styles.mini} variants={slideIn} custom={0.3}>
                     <b>메일</b>견적서 검토 요청…
-                  </p>
+                  </motion.p>
                 </div>
               </Column>
-              <Arrow />
+              <Arrow delay={0.5} />
               <Column label="모아냥 카드">
-                <Cards tasks={sampleCards} />
+                <Cards tasks={sampleCards} delay={0.7} />
               </Column>
             </Vignette>
           </Value>
@@ -119,16 +202,20 @@ export function Values() {
               </>
             }
             desc="며칠 뒤 따로 온 마감 정보를 새 할 일로 만들지 않고, 원래 업무 카드에 합칩니다."
+            onEnter={revealMerged}
           >
             <Vignette label="날짜 없는 카드와 할 일 없는 카드가 한 장으로 합쳐져 마감일과 요청자가 채워진 모습">
               <Column label="합치기 전 · 카드 2">
-                <Cards tasks={[taskFromMail, taskFromChat]} />
+                <Cards tasks={[taskFromMail, taskFromChat]} delay={0.1} />
               </Column>
-              <Arrow />
+              <Arrow delay={0.45} />
               <Column label="합친 후 · 카드 1">
-                <Scaled baseWidth={390} scale={CARD_SCALE}>
-                  <TaskCard task={mergedTask} expanded />
-                </Scaled>
+                {/* 펼쳐진 높이만큼 자리를 미리 잡아 두어, 펼칠 때 행 높이가 흔들리지 않게 합니다 */}
+                <div className={styles.mergedSlot}>
+                  <motion.div variants={pop} custom={0.6}>
+                    <TaskCard task={mergedTask} expanded={merged} size="sm" />
+                  </motion.div>
+                </div>
               </Column>
             </Vignette>
           </Value>
@@ -143,26 +230,32 @@ export function Values() {
               </>
             }
             desc="날짜가 빠진 카드는 ‘채워 주세요’에 모입니다. 채우면 바로 캘린더에서 보입니다."
+            onEnter={revealPlaced}
           >
             <Vignette label="채워 주세요 목록의 카드와 10월 23일에 일정이 올라간 주간 캘린더">
               <Column label="채워 주세요 · 2" className={styles.narrow}>
-                <Cards tasks={pendingCards} scale={0.55} />
+                <Cards tasks={pendingCards} delay={0.1} />
               </Column>
-              <Arrow />
+              <Arrow delay={0.45} />
               <Column label="10월 19일 – 23일" className={styles.week}>
-                <div className={styles.weekRow}>
+                <motion.div className={styles.weekRow} variants={pop} custom={0.55}>
                   {WEEK.map((d) => (
                     <div key={d} className={styles.day}>
                       <span>{d}</span>
-                      {d === 23 && (
-                        <span className={styles.dayEvent}>
+                      {d === 23 && placed && (
+                        <motion.span
+                          className={styles.dayEvent}
+                          initial={reduce ? false : { opacity: 0, y: -8, scale: 0.85 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 520, damping: 22 }}
+                        >
                           <img src={eventTodo} width={6} height={6} alt="" />
                           제안서 초안
-                        </span>
+                        </motion.span>
                       )}
                     </div>
                   ))}
-                </div>
+                </motion.div>
               </Column>
             </Vignette>
           </Value>
