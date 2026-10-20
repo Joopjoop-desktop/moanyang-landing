@@ -15,6 +15,10 @@ type TaskCardProps = {
   receiving?: boolean;
   /** 끌고 있는 카드 — 떠 있는 그림자 */
   lifted?: boolean;
+  /** 다른 카드를 잡고 있는 동안 놓을 곳으로 표시 — 점선 테두리 */
+  dropHint?: boolean;
+  /** 카드 위에 띄우는 안내 문구 (예: '여기에 놓으세요') */
+  dropLabel?: string;
   /** 펼친 내용 중 앞에서부터 몇 개를 보여줄지 (채워지는 연출용) */
   filledCount?: number;
   /**
@@ -29,7 +33,20 @@ type TaskCardProps = {
 
 /** Figma Main2_2 '채워 주세요' 목록의 카드 (기준 크기 390px) */
 export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskCard(
-  { task, expanded, receiving, lifted, filledCount, size = 'md', style, className, transition, ...motionProps },
+  {
+    task,
+    expanded,
+    receiving,
+    lifted,
+    dropHint,
+    dropLabel,
+    filledCount,
+    size = 'md',
+    style,
+    className,
+    transition,
+    ...motionProps
+  },
   ref,
 ) {
   const fields = task.fields ?? [];
@@ -45,13 +62,35 @@ export const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(function TaskC
   return (
     <motion.div
       ref={ref}
-      className={[styles.card, size === 'sm' && styles.sm, expanded && styles.expanded, receiving && styles.receiving, lifted && styles.lifted, className]
+      className={[
+        styles.card,
+        size === 'sm' && styles.sm,
+        expanded && styles.expanded,
+        dropHint && styles.dropHint,
+        receiving && styles.receiving,
+        lifted && styles.lifted,
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
       style={style}
       {...motionProps}
       transition={transition}
     >
+      <AnimatePresence>
+        {dropLabel && (
+          <motion.span
+            key="drop-label"
+            className={styles.dropLabel}
+            initial={{ opacity: 0, y: 6, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, x: '-50%' }}
+            transition={{ duration: 0.18 }}
+          >
+            {dropLabel}
+          </motion.span>
+        )}
+      </AnimatePresence>
       <div className={styles.head}>
         <img className={styles.checkbox} src={checkbox} width={20} height={20} alt="" />
         <div className={styles.headText}>

@@ -12,8 +12,31 @@
     box-shadow 0.2s ease;
 }
 
+/* 다른 카드를 잡고 있는 동안: 놓을 곳을 점선으로 */
+.dropHint {
+  outline: 2px dashed var(--color-main-black);
+  outline-offset: 4px;
+}
+
+/* 위에 올라왔을 때: 실선 (dropHint보다 뒤에 둬야 덮어씁니다) */
 .receiving {
-  outline-color: var(--color-main-black);
+  outline: 2px solid var(--color-main-black);
+  outline-offset: -2px;
+}
+
+.dropLabel {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 3;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--color-main-black);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--color-gray-g00);
+  pointer-events: none;
 }
 
 .lifted {

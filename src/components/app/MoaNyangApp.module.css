@@ -132,9 +132,31 @@
     box-shadow 0.2s ease;
 }
 
+/* 잡고 있는 동안: 놓을 곳을 점선으로 표시 */
+.inputHint {
+  outline: 3px dashed var(--color-main-blue);
+  outline-offset: 4px;
+}
+
+/* 위에 올라왔을 때: 실선으로 진하게 (inputHint보다 뒤에 둬야 덮어씁니다) */
 .inputActive {
-  outline-color: var(--color-main-blue);
+  outline: 3px solid var(--color-main-blue);
+  outline-offset: 0;
   box-shadow: 0 6px 18px rgba(22, 75, 238, 0.18);
+}
+
+.dropLabel {
+  position: absolute;
+  left: 50%;
+  top: -42px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--color-main-blue);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--color-gray-g00);
+  pointer-events: none;
 }
 
 .inputArea {

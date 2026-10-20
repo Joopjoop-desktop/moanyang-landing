@@ -20,6 +20,8 @@ type MoaNyangAppProps = {
   feedPressed?: boolean;
   /** 입력창 위로 무언가를 끌고 와서 놓을 수 있는 상태 */
   inputActive?: boolean;
+  /** 무언가를 잡고 있는 동안 '여기에 놓으세요' 표시 */
+  inputHint?: boolean;
   day23Event?: string | null;
   /** '채워 주세요' 목록 (카드들) */
   list?: ReactNode;
@@ -31,7 +33,7 @@ type MoaNyangAppProps = {
  * 히어로와 체험 패널이 함께 쓰며, 상태는 각자 props로 넘깁니다.
  */
 export const MoaNyangApp = forwardRef<HTMLDivElement, MoaNyangAppProps>(function MoaNyangApp(
-  { count, inputText, catSmile, feedPressed, inputActive, day23Event, list, inputRef },
+  { count, inputText, catSmile, feedPressed, inputActive, inputHint, day23Event, list, inputRef },
   ref,
 ) {
   return (
@@ -69,7 +71,23 @@ export const MoaNyangApp = forwardRef<HTMLDivElement, MoaNyangAppProps>(function
         <CatFace smile={catSmile} />
       </div>
 
-      <div ref={inputRef} className={`${styles.input} ${inputActive ? styles.inputActive : ''}`}>
+      <div
+        ref={inputRef}
+        className={`${styles.input} ${inputHint ? styles.inputHint : ''} ${inputActive ? styles.inputActive : ''}`}
+      >
+        <AnimatePresence>
+          {(inputHint || inputActive) && (
+            <motion.span
+              className={styles.dropLabel}
+              initial={{ opacity: 0, y: 6, x: '-50%' }}
+              animate={{ opacity: 1, y: 0, x: '-50%' }}
+              exit={{ opacity: 0, x: '-50%' }}
+              transition={{ duration: 0.18 }}
+            >
+              {inputActive ? '놓으면 바로 정리돼요' : '여기에 놓으세요'}
+            </motion.span>
+          )}
+        </AnimatePresence>
         <div className={styles.inputArea}>
           <AnimatePresence mode="wait" initial={false}>
             {inputText ? (

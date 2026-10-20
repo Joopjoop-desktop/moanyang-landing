@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from 'react';
 
 type Options = {
   enabled: boolean;
@@ -55,6 +55,13 @@ export function useDragToTarget({ enabled, targetRef, onDrop, keepOffsetOnDrop =
     setOver(false);
     if (!keepOffset) setOffset({ x: 0, y: 0 });
   }, []);
+
+  // 다시 끌 수 있게 되면(예: '다시 해보기' 뒤) 지난번에 놓았던 위치와 상태를 지웁니다
+  useEffect(() => {
+    if (!enabled) return;
+    setOffset({ x: 0, y: 0 });
+    setDropped(false);
+  }, [enabled]);
 
   // pointerup 뒤에도 lostpointercapture가 한 번 더 오므로, 아직 끄는 중일 때만 정리합니다
   const cancel = () => {

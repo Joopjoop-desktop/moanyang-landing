@@ -125,6 +125,8 @@ export function TryPanel() {
           task={merging ? mergedTask : taskFromMail}
           expanded={merging}
           receiving={cardDrag.over}
+          dropHint={cardDrag.dragging}
+          dropLabel={cardDrag.over ? '놓으면 하나로 합쳐져요' : cardDrag.dragging ? '여기에 놓으세요' : undefined}
           initial={{ opacity: 0, y: -12, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, x: -90, scale: 0.9, transition: { duration: 0.4 } }}
@@ -135,16 +137,23 @@ export function TryPanel() {
           key={`b-${state.round}`}
           task={taskFromChat}
           lifted={cardDrag.dragging}
-          className={step === 2 && !busy ? styles.draggableCard : undefined}
+          className={
+            step === 2 && !busy && !touchOnly
+              ? // 마우스: 잡을 수 있는 카드임을 링으로 알려 줍니다 (잡으면 멈춤)
+                `${styles.draggableCard} ${cardDrag.dragging ? '' : styles.nudgeCard}`
+              : undefined
+          }
           initial={{ opacity: 0, y: -12, scale: 0.96 }}
+          // 끄는 중이거나, 놓아서 합쳐지는 중일 때만 끈 위치를 씁니다.
+          // (그 외에는 항상 제자리 — 이전 판에서 놓았던 위치가 '다시 해보기' 뒤에 남지 않도록)
           animate={{
             opacity: 1,
             scale: 1,
-            x: cardDrag.offset.x,
-            y: cardDrag.offset.y,
+            x: cardDrag.dragging || merging ? cardDrag.offset.x : 0,
+            y: cardDrag.dragging || merging ? cardDrag.offset.y : 0,
             rotate: cardDrag.dragging ? 1.2 : 0,
           }}
-          transition={followPointer(cardDrag.dragging || cardDrag.dropped)}
+          transition={followPointer(cardDrag.dragging || merging)}
           exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.25 } }}
           {...cardDrag.bind}
         />
@@ -159,6 +168,7 @@ export function TryPanel() {
       inputText={inputTextOf(state, { mail: mail.picked, chat: chat.text })}
       catSmile={phase === 'feeding' || phase === 'eating'}
       inputActive={mailDrag.over}
+      inputHint={mailDrag.dragging}
       day23Event={step === 3 ? eventTitle : null}
       list={list}
     />
@@ -199,7 +209,13 @@ export function TryPanel() {
         </p>
         <div className={styles.nextActions}>
           {step === 2 && (
-            <Button variant="accent" onClick={() => merge('button')} disabled={busy}>
+            <Button
+              variant="accent"
+              // 터치 화면에서만 보이고, 마우스에서는 끌어서 합치도록 숨깁니다 (키보드로 Tab 이동하면 나타남)
+              className={touchOnly ? (busy ? undefined : styles.nudge) : styles.keyboardOnly}
+              onClick={() => merge('button')}
+              disabled={busy}
+            >
               두 카드 합치기
             </Button>
           )}
@@ -217,7 +233,7 @@ export function TryPanel() {
             <p>
               <strong>받은 메시지</strong> <span>예시</span>
             </p>
-            <span className={styles.inboxHint}>{touchOnly ? '버튼으로 진행해요' : '끌어다 놓거나 버튼으로'}</span>
+            <span className={styles.inboxHint}>{touchOnly ? '버튼으로 진행해요' : '메일은 끌어서, 카톡은 버튼으로'}</span>
           </div>
 
           <motion.article
@@ -243,10 +259,33 @@ export function TryPanel() {
             <div className={styles.action}>
               {mailDone ? (
                 <Button disabled>넣었어요</Button>
-              ) : (
-                <Button onClick={() => insertMail('button')} disabled={busy}>
+              ) : touchOnly ? (
+                // 터치 화면은 드래그가 없으므로 버튼으로 진행합니다
+                <Button
+                  className={busy ? undefined : styles.nudge}
+                  onClick={() => insertMail('button')}
+                  disabled={busy}
+                >
                   메일 내용 넣기
                 </Button>
+              ) : (
+                <>
+                  <span className={styles.dragHint}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                      <circle cx="5" cy="3" r="1.2" fill="currentColor" />
+                      <circle cx="9" cy="3" r="1.2" fill="currentColor" />
+                      <circle cx="5" cy="7" r="1.2" fill="currentColor" />
+                      <circle cx="9" cy="7" r="1.2" fill="currentColor" />
+                      <circle cx="5" cy="11" r="1.2" fill="currentColor" />
+                      <circle cx="9" cy="11" r="1.2" fill="currentColor" />
+                    </svg>
+                    카드를 잡아서 오른쪽 입력창에 놓아 보세요
+                  </span>
+                  {/* 마우스에서는 숨기고, 키보드로 Tab 이동하면 나타나는 버튼 */}
+                  <Button className={styles.keyboardOnly} onClick={() => insertMail('button')} disabled={busy}>
+                    메일 내용 넣기
+                  </Button>
+                </>
               )}
             </div>
           </motion.article>
@@ -271,7 +310,11 @@ export function TryPanel() {
                 <Button disabled>넣었어요</Button>
               ) : (
                 <>
-                  <Button onClick={pasteChat} disabled={!chatActive}>
+                  <Button
+                    className={chatActive ? styles.nudge : undefined}
+                    onClick={pasteChat}
+                    disabled={!chatActive}
+                  >
                     복사해서 붙여넣기
                   </Button>
                   {step === 0 && <span className={styles.lockedHint}>메일을 먼저 넣어 보세요</span>}
