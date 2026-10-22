@@ -12,7 +12,7 @@ type EventMap = {
   hero_animation_play: { source: 'auto' | 'user' };
   try_start: { method: 'button' | 'drag' };
   card_merge_complete: { method: 'button' | 'drag' };
-  notify_submit_complete: { os: 'windows' | 'macos'; betaOptIn: boolean };
+  notify_submit_complete: { os: ('windows' | 'macos')[]; betaOptIn: boolean };
 };
 
 export type AnalyticsEventName = keyof EventMap;
