@@ -2,10 +2,9 @@ import { useId, useRef, useState, type FormEvent } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Button } from '../components/Button';
 import { trackNotifySubmit } from '../lib/analytics';
+import { joinWaitlist, type Os } from '../lib/waitlist';
 import badgeDot from '../assets/figma/badge-dot.svg';
 import styles from './Notify.module.css';
-
-export type Os = 'windows' | 'macos';
 
 const OS_OPTIONS: { value: Os; label: string }[] = [
   { value: 'windows', label: 'Windows' },
@@ -58,6 +57,9 @@ export function Notify() {
   const [noticeOpen, setNoticeOpen] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  /** 저장 자체가 실패했을 때 (네트워크 등) 폼 아래에 보여줄 안내 */
+  const [formError, setFormError] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const focusOnMount = useRef(false);
 
@@ -77,8 +79,10 @@ export function Notify() {
     if (errors.os) setErrors((p) => ({ ...p, os: undefined }));
   }
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (submitting) return;
+    setFormError(null);
     const next = validate(email, os, privacy);
     setErrors(next);
     if (next.email) {
@@ -93,7 +97,21 @@ export function Notify() {
       document.getElementById(ids.privacy)?.focus();
       return;
     }
-    // TODO(Supabase): 여기서 waitlist에 저장합니다. 지금은 완료 상태만 보여줍니다.
+
+    setSubmitting(true);
+    const result = await joinWaitlist({ email, os, betaOptIn: beta, privacyVersion: PRIVACY_VERSION });
+    setSubmitting(false);
+
+    if (result === 'duplicate') {
+      setErrors({ email: '이미 신청하셨어요.' });
+      emailRef.current?.focus();
+      return;
+    }
+    if (result === 'error') {
+      setFormError('신청을 저장하지 못했어요. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
+
     focusOnMount.current = true;
     setSubmitted(true);
     trackNotifySubmit({ os, betaOptIn: beta });
@@ -108,6 +126,7 @@ export function Notify() {
     setPrivacy(false);
     setNoticeOpen(false);
     setErrors({});
+    setFormError(null);
   }
 
   // 완료 화면 ↔ 폼이 바뀐 뒤 새로 나타난 쪽으로 포커스를 옮깁니다 (전환 애니메이션 뒤에 마운트되므로 ref 콜백에서 처리)
@@ -304,9 +323,14 @@ export function Notify() {
                     )}
                   </div>
 
-                  <Button type="submit" size="md" block>
-                    출시 알림 신청하기
+                  <Button type="submit" size="md" block disabled={submitting} aria-busy={submitting}>
+                    {submitting ? '신청하는 중…' : '출시 알림 신청하기'}
                   </Button>
+                  {formError && (
+                    <p className={styles.error} role="alert">
+                      {formError}
+                    </p>
+                  )}
                 </motion.form>
               )}
             </AnimatePresence>
