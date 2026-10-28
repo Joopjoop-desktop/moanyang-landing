@@ -219,11 +219,10 @@ export function TryPanel() {
               두 카드 합치기
             </Button>
           )}
-          {step >= 1 && (
-            <Button variant="light" onClick={reset}>
-              다시 해보기
-            </Button>
-          )}
+          {/* 처음부터 자리를 잡아 두고 0단계에서는 숨깁니다 — 나타날 때 막대 높이가 바뀌지 않도록 */}
+          <Button variant="light" className={step === 0 ? styles.reserved : undefined} onClick={reset}>
+            다시 해보기
+          </Button>
         </div>
       </div>
 

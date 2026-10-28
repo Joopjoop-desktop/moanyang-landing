@@ -83,9 +83,13 @@
   color: var(--color-text-primary);
 }
 
+/* 문구가 단계마다 길이가 달라도 막대 높이가 바뀌지 않도록 두 줄 높이를 잡아 두고, 한 줄일 때는 가운데 정렬 */
 .nextText {
   flex: 1;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  min-height: 3em;
   font-size: 15px;
   line-height: 1.5;
   color: var(--color-text-inverse);
@@ -99,6 +103,11 @@
   display: flex;
   gap: 12px;
   flex-shrink: 0;
+}
+
+/* 자리만 차지하고 보이지 않음 (포커스·스크린리더에서도 빠짐) */
+.reserved {
+  visibility: hidden;
 }
 
 /* ───── 받은 메시지 + 서비스 화면 ───── */
