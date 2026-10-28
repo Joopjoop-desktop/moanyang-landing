@@ -4,6 +4,7 @@ import { Button } from '../../components/Button';
 import { Scaled } from '../../components/Scaled';
 import { MoaNyangApp, APP_HEIGHT, APP_WIDTH } from '../../components/app/MoaNyangApp';
 import { TaskCard } from '../../components/app/TaskCard';
+import type { CatMood } from '../../components/app/CatFace';
 import { chat, eventTitle, mail, mergedTask, taskFromChat, taskFromMail } from '../../data/demo';
 import { trackMergeComplete, trackTryStart } from '../../lib/analytics';
 import { NEXT_TEXT, NEXT_TEXT_TOUCH, STEP_LABELS, initialTryState, inputTextOf, tryReducer, type Method } from './tryReducer';
@@ -30,7 +31,7 @@ const MOBILE_CROP = { x: 896, y: 56, w: 432, h: 470 };
  * 데스크톱에서는 캘린더 오른쪽 세 칸(목·금·토 — 17일, 23일 포함)과 '채워 주세요' 영역만 잘라
  * 크게 보여줍니다. 전체를 넣으면 0.55배로 줄어 글자가 너무 작아지기 때문입니다 (이 크롭은 약 0.9배).
  */
-const DESKTOP_CROP = { x: 512, y: 60, w: 824, h: 720 };
+const DESKTOP_CROP = { x: 512, y: 52, w: 824, h: 720 };
 
 function useMedia(query: string) {
   const mq = typeof window !== 'undefined' ? window.matchMedia(query) : null;
@@ -116,6 +117,13 @@ export function TryPanel() {
   const merging = phase === 'merging';
   const count = step === 3 ? 0 : merging ? 1 : (step >= 1 ? 1 : 0) + (step >= 2 ? 1 : 0);
 
+  /*
+   * 캐릭터 표정 (Figma '캐릭터 최종')
+   *   메일을 입력창 위로 가져오거나 글이 입력창에 들어 있으면 입을 벌리고,
+   *   그 외에는 '채워 주세요'가 비어 있으면 입이 없는 표정, 하나라도 있으면 먹는 표정입니다.
+   */
+  const catMood: CatMood = mailDrag.over || phase === 'feeding' ? 'openMouth' : count > 0 ? 'eating' : 'start';
+
   const list = (
     <AnimatePresence initial={false}>
       {showA && (
@@ -166,10 +174,12 @@ export function TryPanel() {
       count={count}
       inputRef={inputRef}
       inputText={inputTextOf(state, { mail: mail.picked, chat: chat.text })}
-      catSmile={phase === 'feeding' || phase === 'eating'}
+      catMood={catMood}
       inputActive={mailDrag.over}
       inputHint={mailDrag.dragging}
-      day23Event={step === 3 ? eventTitle : null}
+      // 카톡 카드(할 일 없음)가 생기면 23일에 점선 칩으로, 합치면 완성된 일정으로 바뀝니다
+      day23Event={step === 3 ? eventTitle : step === 2 ? taskFromChat.title : null}
+      day23Kind={step === 3 ? 'todo' : 'noTask'}
       list={list}
     />
   );

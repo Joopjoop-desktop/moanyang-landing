@@ -28,7 +28,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 8px;
   padding: 10px 4px;
   background: var(--color-gray-g00);
 }
@@ -37,13 +37,15 @@
   background: var(--color-gray-g30);
 }
 
+/* Figma Date: 24px 원. 오늘은 검정 원 */
 .date {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 24px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   margin-left: 6px;
+  border-radius: 28px;
   font-size: 16px;
   line-height: 22px;
   color: var(--color-gray-g100);
@@ -61,39 +63,71 @@
   color: var(--color-main-blue);
 }
 
+.today {
+  background: var(--color-main-black);
+  color: var(--color-gray-g00);
+}
+
 .events {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   width: 100%;
 }
 
-.event,
-.eventDone {
+/* Figma Component 23 (116 × 32) */
+.event {
   display: flex;
   align-items: center;
   gap: 4px;
   width: 100%;
-  padding: 4px;
+  padding: 8px 4px;
   border-radius: 6px;
   font-size: 12px;
+  font-weight: 500;
   line-height: normal;
+  color: var(--color-gray-g100);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    outline-color 0.3s ease;
 }
 
-.event {
-  background: var(--color-gray-g00);
-  border: 1px solid var(--color-gray-g40);
-  color: #000;
+.event img {
+  flex-shrink: 0;
+}
+
+.eventTodo {
+  background: var(--color-main-black);
+  box-shadow: 0 2px 6px rgba(42, 42, 42, 0.1);
+  color: var(--color-gray-g00);
 }
 
 .eventDone {
   background: var(--color-gray-g40);
-  border: 1px solid var(--color-gray-g40);
+  box-shadow: 0 2px 6px rgba(42, 42, 42, 0.1);
   color: var(--color-gray-g60);
   text-decoration: line-through;
 }
 
+/* 점선 테두리는 칸 크기가 바뀌지 않도록 안쪽 outline으로 그립니다 */
+.eventNoTask,
+.eventNoDate {
+  background: var(--color-gray-g00);
+  outline: 1px dashed;
+  outline-offset: -1px;
+}
+
+.eventNoTask {
+  outline-color: var(--color-main-blue);
+}
+
+.eventNoDate {
+  outline-color: var(--color-main-red);
+}
+
 .eventText {
+  max-width: 112px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

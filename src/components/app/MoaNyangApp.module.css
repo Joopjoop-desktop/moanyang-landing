@@ -104,12 +104,14 @@
   font-weight: 500;
 }
 
-.cat {
+/* 새 캐릭터 (Figma Character, 76 × 74.24) — 앞발이 입력창 위에 걸치도록 입력창보다 위에 그립니다 */
+.character {
   position: absolute;
-  left: 1232px;
-  top: 64px;
+  z-index: 1;
+  left: 1222px;
+  top: 55px;
   width: 76px;
-  height: 68px;
+  height: 74.24px;
 }
 
 .input {

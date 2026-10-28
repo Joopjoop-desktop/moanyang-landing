@@ -1,7 +1,7 @@
 import { forwardRef, type ReactNode, type Ref } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Calendar } from './Calendar';
-import { CatFace } from './CatFace';
+import { Calendar, type EventKind } from './Calendar';
+import { CatFace, type CatMood } from './CatFace';
 import iconX from '../../assets/figma/icon-x.svg';
 import chevronLeft from '../../assets/figma/chevron-left.svg';
 import chevronRight from '../../assets/figma/chevron-right.svg';
@@ -15,7 +15,8 @@ type MoaNyangAppProps = {
   count: number;
   /** 입력창에 들어 있는 글 */
   inputText?: string;
-  catSmile?: boolean;
+  /** 캐릭터 표정 (기본: start) */
+  catMood?: CatMood;
   /** 먹이주기 버튼이 눌린 순간 */
   feedPressed?: boolean;
   /** 입력창 위로 무언가를 끌고 와서 놓을 수 있는 상태 */
@@ -23,6 +24,8 @@ type MoaNyangAppProps = {
   /** 무언가를 잡고 있는 동안 '여기에 놓으세요' 표시 */
   inputHint?: boolean;
   day23Event?: string | null;
+  /** 23일 일정 칩 모양 (기본: 할 일과 날짜가 모두 있는 일정) */
+  day23Kind?: EventKind;
   /** '채워 주세요' 목록 (카드들) */
   list?: ReactNode;
   inputRef?: Ref<HTMLDivElement>;
@@ -33,7 +36,7 @@ type MoaNyangAppProps = {
  * 히어로와 체험 패널이 함께 쓰며, 상태는 각자 props로 넘깁니다.
  */
 export const MoaNyangApp = forwardRef<HTMLDivElement, MoaNyangAppProps>(function MoaNyangApp(
-  { count, inputText, catSmile, feedPressed, inputActive, inputHint, day23Event, list, inputRef },
+  { count, inputText, catMood = 'start', feedPressed, inputActive, inputHint, day23Event, day23Kind, list, inputRef },
   ref,
 ) {
   return (
@@ -57,7 +60,7 @@ export const MoaNyangApp = forwardRef<HTMLDivElement, MoaNyangAppProps>(function
       </div>
 
       <div className={styles.calendar}>
-        <Calendar day23Event={day23Event} />
+        <Calendar day23Event={day23Event} day23Kind={day23Kind} />
       </div>
 
       <div className={styles.sideHead}>
@@ -67,8 +70,8 @@ export const MoaNyangApp = forwardRef<HTMLDivElement, MoaNyangAppProps>(function
         </motion.span>
       </div>
 
-      <div className={styles.cat}>
-        <CatFace smile={catSmile} />
+      <div className={styles.character}>
+        <CatFace mood={catMood} />
       </div>
 
       <div

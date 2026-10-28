@@ -169,7 +169,7 @@ export function HeroDemo() {
               <MoaNyangApp
                 count={f.count}
                 inputText={f.inputText}
-                catSmile={f.catSmile}
+                catMood={f.catMood}
                 feedPressed={f.feedPressed}
                 inputActive={f.inputActive}
                 day23Event={f.day23 ? eventTitle : null}

@@ -1,7 +1,9 @@
 import { memo } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import eventTodo from '../../assets/figma/event-todo.svg';
-import eventDone from '../../assets/figma/event-done.svg';
+import catDefault from '../../assets/figma/chip-cat-default.svg';
+import catDone from '../../assets/figma/chip-cat-done.svg';
+import catNoTask from '../../assets/figma/chip-cat-no-task.svg';
+import catNoDate from '../../assets/figma/chip-cat-no-date.svg';
 import styles from './Calendar.module.css';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -12,22 +14,43 @@ const CELLS: { day: number; muted?: boolean }[] = [
   ...Array.from({ length: 31 }, (_, i) => ({ day: i + 1 })),
 ];
 
+/** 데모 속 '오늘' */
+const TODAY = 17;
+
+/**
+ * Figma Component 23 일정 칩
+ *   todo   — 할 일과 날짜가 모두 있는 일정 (검정)
+ *   done   — 끝낸 일 (회색 + 취소선)
+ *   noTask — 할 일이 없는 일정 (파란 점선)
+ *   noDate — 날짜가 없는 일정 (빨간 점선)
+ */
+export type EventKind = 'todo' | 'done' | 'noTask' | 'noDate';
+
+const CHIP: Record<EventKind, { className: string; icon: string }> = {
+  todo: { className: styles.eventTodo, icon: catDefault },
+  done: { className: styles.eventDone, icon: catDone },
+  noTask: { className: styles.eventNoTask, icon: catNoTask },
+  noDate: { className: styles.eventNoDate, icon: catNoDate },
+};
+
 type CalendarProps = {
   /** 23일에 올라갈 일정 이름. 없으면 비어 있음 */
   day23Event?: string | null;
+  day23Kind?: EventKind;
 };
 
-function EventChip({ title, done }: { title: string; done?: boolean }) {
+function EventChip({ title, kind = 'todo' }: { title: string; kind?: EventKind }) {
+  const { className, icon } = CHIP[kind];
   return (
-    <span className={done ? styles.eventDone : styles.event}>
-      <img src={done ? eventDone : eventTodo} width={12} height={12} alt="" />
+    <span className={`${styles.event} ${className}`}>
+      <img src={icon} width={16} height={16} alt="" />
       <span className={styles.eventText}>{title}</span>
     </span>
   );
 }
 
-/** Figma Main2_2 캘린더 (기준 868 × 647) */
-export const Calendar = memo(function Calendar({ day23Event }: CalendarProps) {
+/** Figma Main2_1 캘린더 (기준 868 × 647) */
+export const Calendar = memo(function Calendar({ day23Event, day23Kind = 'todo' }: CalendarProps) {
   return (
     <div className={styles.calendar}>
       <div className={styles.weekdays} aria-hidden="true">
@@ -40,15 +63,22 @@ export const Calendar = memo(function Calendar({ day23Event }: CalendarProps) {
       <div className={styles.grid}>
         {CELLS.map(({ day, muted }, i) => {
           const col = i % 7;
-          const tone = muted ? styles.muted : col === 0 ? styles.sun : col === 6 ? styles.sat : '';
+          const tone = muted
+            ? styles.muted
+            : day === TODAY
+              ? styles.today
+              : col === 0
+                ? styles.sun
+                : col === 6
+                  ? styles.sat
+                  : '';
           return (
             <div key={`${muted ? 'p' : 'c'}${day}`} className={`${styles.cell} ${muted ? styles.cellMuted : ''}`}>
               <span className={`${styles.date} ${tone}`}>{day}</span>
-              {!muted && day === 17 && (
+              {!muted && day === TODAY && (
                 <div className={styles.events}>
                   <EventChip title="해야 할 일" />
-                  <EventChip title="다 끝낸 일" done />
-                  <EventChip title="다 끝낸 일" done />
+                  <EventChip title="다 끝낸 일" kind="done" />
                 </div>
               )}
               {!muted && day === 23 && (
@@ -62,7 +92,7 @@ export const Calendar = memo(function Calendar({ day23Event }: CalendarProps) {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                       >
-                        <EventChip title={day23Event} />
+                        <EventChip title={day23Event} kind={day23Kind} />
                       </motion.span>
                     )}
                   </AnimatePresence>

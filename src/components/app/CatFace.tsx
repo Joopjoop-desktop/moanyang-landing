@@ -1,37 +1,41 @@
-import { AnimatePresence, motion } from 'motion/react';
-import cat from '../../assets/figma/cat.svg';
-import catSmile from '../../assets/figma/cat-smile.svg';
+import { motion } from 'motion/react';
+import characterStart from '../../assets/figma/character-start.png';
+import characterOpenMouth from '../../assets/figma/character-open-mouth.png';
+import characterEating from '../../assets/figma/character-eating.png';
+import characterDefault from '../../assets/figma/character-default.png';
 import styles from './CatFace.module.css';
 
-/** 모아냥 고양이. 먹이를 받으면 웃는 표정으로 바뀝니다. */
-export function CatFace({ smile }: { smile?: boolean }) {
+/** Figma '캐릭터 최종'의 네 가지 표정 */
+export type CatMood = 'start' | 'openMouth' | 'eating' | 'default';
+
+const MOODS: Record<CatMood, string> = {
+  start: characterStart,
+  openMouth: characterOpenMouth,
+  eating: characterEating,
+  default: characterDefault,
+};
+
+/**
+ * 모아냥 캐릭터. 네 표정을 모두 겹쳐 두고 지금 표정만 보여줍니다
+ * (처음 바뀔 때 이미지를 새로 불러오느라 깜빡이지 않도록).
+ */
+export function CatFace({ mood }: { mood: CatMood }) {
   return (
     <span className={styles.wrap}>
-      <AnimatePresence initial={false}>
-        {smile ? (
-          <motion.img
-            key="smile"
-            className={styles.smile}
-            src={catSmile}
-            alt=""
-            initial={{ opacity: 0, scale: 0.92, y: 2 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 22 }}
-          />
-        ) : (
-          <motion.img
-            key="default"
-            className={styles.default}
-            src={cat}
-            alt=""
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          />
-        )}
-      </AnimatePresence>
+      {(Object.keys(MOODS) as CatMood[]).map((m) => (
+        <motion.img
+          key={m}
+          className={styles.character}
+          src={MOODS[m]}
+          alt=""
+          initial={false}
+          animate={m === mood ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
+          transition={{
+            opacity: { duration: 0.15 },
+            scale: { type: 'spring', stiffness: 420, damping: 22 },
+          }}
+        />
+      ))}
     </span>
   );
 }

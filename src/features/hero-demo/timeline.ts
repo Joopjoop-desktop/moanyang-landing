@@ -9,6 +9,7 @@
  */
 
 import { APP_POINTS } from '../../components/app/MoaNyangApp';
+import type { CatMood } from '../../components/app/CatFace';
 
 /* ───────── 무대 배치 (Figma 82:3389) ───────── */
 
@@ -77,9 +78,7 @@ const T = {
   dragEnd: 4.55,
   drop: 4.75,
   /* 끌어다 놓으면 바로 먹이를 받고 카드가 됩니다 (입력창에 글이 머물지 않음) */
-  smile1: 4.75,
   cardA: 4.95,
-  smile1End: 6.0,
   idleMove: 5.2,
   /* 카톡 */
   kakaoIn: 8.1,
@@ -93,7 +92,6 @@ const T = {
   pasteHintOut: 13.1,
   toFeed: 13.2,
   feedPress: 14.0,
-  smile2: 14.15,
   eat2: 15.1,
   cardB: 15.4,
   /* 합치기 */
@@ -150,7 +148,7 @@ export type HeroFrame = {
   ghost: (Pt & { opacity: number; scale: number }) | null;
   inputActive: boolean;
   inputText: string;
-  catSmile: boolean;
+  catMood: CatMood;
   feedPressed: boolean;
   cardA: CardState;
   cardB: 'hidden' | 'shown' | 'gone';
@@ -298,7 +296,14 @@ export function frameAt(t: number, m: Measures): HeroFrame {
     inputActive: t >= T.dragEnd - 0.3 && t < T.drop + 0.1,
     // 메일은 끌어다 놓자마자 카드가 되므로 입력창에 글이 남지 않습니다. 카톡만 붙여넣은 글이 보입니다.
     inputText: t >= T.pasted && t < T.eat2 ? CHAT_TEXT : '',
-    catSmile: (t >= T.smile1 && t < T.smile1End) || (t >= T.smile2 && t < T.cardB),
+    // 체험 패널과 같은 규칙: 메일을 입력창에 가져와 넣는 중이거나 글이 입력창에 있으면 입을 벌리고,
+    // 그 외에는 '채워 주세요'가 비어 있으면 입이 없는 표정, 하나라도 있으면 먹는 표정
+    catMood:
+      (t >= T.dragEnd - 0.3 && t < T.cardA) || (t >= T.pasted && t < T.eat2)
+        ? 'openMouth'
+        : count > 0
+          ? 'eating'
+          : 'start',
     feedPressed: t >= T.feedPress && t < T.feedPress + 0.15,
     cardA,
     cardB,

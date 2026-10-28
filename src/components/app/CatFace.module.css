@@ -1,4 +1,4 @@
-/* 부모 크기에 맞춰 늘어납니다. Figma: 기본 표정 이미지가 아래로 6.32% 더 깁니다. */
+/* 부모 크기에 맞춰 늘어납니다 */
 .wrap {
   position: relative;
   display: block;
@@ -6,20 +6,13 @@
   height: 100%;
 }
 
-.default,
-.smile {
+/* 내보낸 이미지에 그림자 여백이 조금 있어 칸을 꽉 채웁니다 */
+.character {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0;
   width: 100%;
-  max-width: none;
-}
-
-.default {
-  height: 106.32%;
-}
-
-.smile {
   height: 100%;
+  max-width: none;
+  object-fit: contain;
   transform-origin: 50% 80%;
 }
