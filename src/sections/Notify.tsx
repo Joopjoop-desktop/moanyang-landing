@@ -152,8 +152,8 @@ export function Notify() {
               가장 먼저 알려드릴게요.
             </h2>
             <p className={styles.desc}>
-              모아냥은 아직 출시 전인 Windows · macOS 데스크톱 앱입니다. 이 신청은 출시 알림을 받기 위한 것이며, 지금 앱을
-              내려받거나 결제하는 절차가 아닙니다.
+              모아냥은 아직 출시 전인 Windows&nbsp;·&nbsp;macOS 데스크톱 앱입니다. 이 신청은 출시 알림을 받기&nbsp;위한
+              것이며, 지금 앱을 내려받거나 결제하는 절차가 아닙니다.
             </p>
           </div>
 
@@ -270,7 +270,7 @@ export function Notify() {
                     />
                     <span className={styles.checkBox} aria-hidden="true" />
                     <span>
-                      출시 전 테스트에 참여할 의향이 있어요 <span className={styles.optional}>(선택)</span>
+                      출시 전 테스트에 참여할 의향이 있어요&nbsp;<span className={styles.optional}>(선택)</span>
                     </span>
                   </label>
 
@@ -293,7 +293,7 @@ export function Notify() {
                         />
                         <span className={styles.checkBox} aria-hidden="true" />
                         <span>
-                          <span className={styles.required}>[필수]</span> 개인정보 수집·이용에 동의해요
+                          <span className={styles.required}>[필수]</span> 개인정보 수집&#x2060;·&#x2060;이용에 동의해요
                         </span>
                       </label>
                       <button

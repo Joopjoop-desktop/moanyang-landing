@@ -267,7 +267,7 @@ export function Values() {
           }
         />
         <ol className={styles.values}>
-          <Value num="01" title="흩어진 요청을 한곳으로" desc="메일과 메신저에서 필요한 부분만 골라 넣으면, 할 일 카드로 정리됩니다.">
+          <Value num="01" title="흩어진 요청을 한곳으로" desc="메일과 메신저에서 필요한 부분만 골라 넣으면, 할&nbsp;일&nbsp;카드로 정리됩니다.">
             {() => <SourcesVignette />}
           </Value>
 
@@ -280,7 +280,7 @@ export function Values() {
                 기존 업무에 합치기
               </>
             }
-            desc="며칠 뒤 따로 온 마감 정보를 새 할 일로 만들지 않고, 원래 업무 카드에 합칩니다."
+            desc="며칠 뒤 따로 온 마감 정보를 새 할&nbsp;일로 만들지 않고, 원래 업무 카드에 합칩니다."
           >
             {(play) => <MergeVignette play={play} />}
           </Value>
@@ -294,7 +294,7 @@ export function Values() {
                 일정으로 확인
               </>
             }
-            desc="날짜가 빠진 카드는 ‘채워 주세요’에 모입니다. 채우면 바로 캘린더에서 보입니다."
+            desc="날짜가 빠진 카드는 ‘채워&nbsp;주세요’에 모입니다. 채우면&nbsp;바로&nbsp;캘린더에서&nbsp;보입니다."
           >
             {(play) => <CalendarVignette play={play} />}
           </Value>

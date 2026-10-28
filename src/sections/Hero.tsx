@@ -9,7 +9,7 @@ export function Hero() {
       <div className="container">
         <div className={styles.top}>
           <div className={styles.headline}>
-            <p className={styles.eyebrow}>Windows · macOS 데스크톱 앱 — 현재 개발 중</p>
+            <p className={styles.eyebrow}>Windows&nbsp;·&nbsp;macOS 데스크톱 앱 — 현재 개발 중</p>
             <h1 id="hero-title" className={styles.title}>
               메일로 온 업무,
               <br />
@@ -20,8 +20,9 @@ export function Hero() {
           </div>
           <div className={styles.copy}>
             <p className={styles.lede}>
-              필요한 메시지만 골라 모아냥에 넣으세요. 할 일은 카드로 정리되고, 나중에 온 일정은 기존 카드에 합쳐 캘린더에
-              올라갑니다.
+              필요한 메시지만 골라 모아냥에 넣으세요.
+              <br />
+              할&nbsp;일은&nbsp;카드로 정리되고, 나중에 온 일정은 기존&nbsp;카드에 합쳐 캘린더에 올라갑니다.
             </p>
             <div className={styles.cta}>
               <ButtonLink href="#try" size="md" className={styles.tryLink}>
@@ -33,7 +34,7 @@ export function Hero() {
             </div>
             <p className={styles.fine}>
               <img src={infoIcon} width={16} height={16} alt="" />
-              메일·메신저를 자동으로 읽지 않아요. 직접 고른 내용만 정리합니다.
+              메일&#x2060;·&#x2060;메신저를 자동으로 읽지 않아요. 직접&nbsp;고른&nbsp;내용만&nbsp;정리합니다.
             </p>
           </div>
         </div>
