@@ -116,3 +116,11 @@
     margin-top: 1px;
   }
 }
+
+/* 모바일에서는 체험 섹션이 숨겨지므로 그리로 가는 버튼도 숨깁니다 */
+@media (max-width: 768px) {
+  /* 버튼 자체의 display보다 우선하도록 .cta와 함께 지정 */
+  .cta .tryLink {
+    display: none;
+  }
+}

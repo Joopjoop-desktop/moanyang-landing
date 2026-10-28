@@ -20,3 +20,10 @@
     padding-top: 80px;
   }
 }
+
+/* 모바일에서는 체험 섹션을 보여주지 않습니다 */
+@media (max-width: 768px) {
+  .section {
+    display: none;
+  }
+}

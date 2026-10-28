@@ -24,7 +24,7 @@ export function Hero() {
               올라갑니다.
             </p>
             <div className={styles.cta}>
-              <ButtonLink href="#try" size="md">
+              <ButtonLink href="#try" size="md" className={styles.tryLink}>
                 직접 정리해 보기
               </ButtonLink>
               <ButtonLink href="#notify" size="md" variant="ghost">
