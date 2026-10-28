@@ -7,14 +7,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  /* 페이지 안 링크의 부드러운 스크롤은 lib/smoothScroll.ts가 맡습니다 (여기서 smooth를 켜면 움직임이 겹칩니다) */
   scroll-padding-top: 88px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
 }
 
 body {
@@ -80,6 +74,11 @@ button {
 :focus-visible {
   outline: 2px solid var(--color-main-blue);
   outline-offset: 2px;
+}
+
+/* 페이지 안 링크로 이동하며 초점을 받은 섹션에는 테두리를 그리지 않습니다 */
+[tabindex='-1']:focus {
+  outline: none;
 }
 
 .container {
