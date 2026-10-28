@@ -1,11 +1,23 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Scaled } from '../../components/Scaled';
 import { MoaNyangApp, APP_HEIGHT, APP_WIDTH } from '../../components/app/MoaNyangApp';
 import { TaskCard } from '../../components/app/TaskCard';
 import { chat, eventTitle, mail, mergedTask, taskFromChat, taskFromMail } from '../../data/demo';
 import { useHeroClock } from './useHeroClock';
-import { APP_ON_STAGE, CHAPTER_COUNT, SCENES, STAGE, frameAt, type HeroFrame, type Measures } from './timeline';
+import { useMedia } from '../../lib/useMedia';
+import {
+  APP_ON_STAGE,
+  CHAPTER_COUNT,
+  SCENES,
+  STAGE,
+  cameraAt,
+  chapterProgressAt,
+  frameAt,
+  type HeroFrame,
+  type Measures,
+  type Scene,
+} from './timeline';
 import windowDotsMail from '../../assets/figma/window-dots-mail.svg';
 import windowDotsKakao from '../../assets/figma/window-dots-kakao.svg';
 import mailIcon from '../../assets/figma/icon-mail.svg';
@@ -89,6 +101,19 @@ function KakaoWindow({ progress, bubbleActive }: { progress: number; bubbleActiv
   );
 }
 
+/** 자막 중 em 부분에 형광펜을 칠합니다 */
+function CaptionText({ scene }: { scene: Scene }) {
+  const i = scene.caption.indexOf(scene.em);
+  if (i < 0) return <>{scene.caption}</>;
+  return (
+    <>
+      {scene.caption.slice(0, i)}
+      <strong className={styles.captionEm}>{scene.em}</strong>
+      {scene.caption.slice(i + scene.em.length)}
+    </>
+  );
+}
+
 function ContextMenu({ state }: { state: HeroFrame['menu'] }) {
   if (state === 'hidden') return null;
   return (
@@ -106,6 +131,8 @@ export function HeroDemo() {
   const line2Ref = useRef<HTMLSpanElement>(null);
   const [measures, setMeasures] = useState<Measures>({ line1: 214, line2: 190 });
   const clock = useHeroClock(rootRef);
+  // 좁은 화면에서는 무대 전체 대신 지금 동작이 일어나는 곳을 확대해서 따라갑니다
+  const compact = useMedia('(max-width: 640px)');
 
   // 폰트가 로드된 뒤 메일 문장 너비를 재서 선택 영역이 글자 끝에 맞도록 합니다
   useLayoutEffect(() => {
@@ -120,6 +147,7 @@ export function HeroDemo() {
 
   const f = useMemo(() => frameAt(clock.t, measures), [clock.t, measures]);
   const scene = SCENES[f.scene];
+  const cam = compact ? cameraAt(clock.t) : null;
 
   // popLayout은 축소된 화면 안에서 위치 계산이 어긋나 튕기므로 쓰지 않습니다
   const list = (
@@ -162,7 +190,12 @@ export function HeroDemo() {
         </ol>
       </div>
 
-      <Scaled baseWidth={STAGE.w} baseHeight={STAGE.h} className={styles.stageWrap}>
+      <Scaled
+        baseWidth={STAGE.w}
+        baseHeight={STAGE.h}
+        crop={cam ? { x: cam.x, y: cam.y, w: cam.w, h: cam.w } : undefined}
+        className={styles.stageWrap}
+      >
         <div className={styles.stage} aria-hidden="true">
           <div className={styles.appSlot} style={{ left: APP_ON_STAGE.x, top: APP_ON_STAGE.y }}>
             <Scaled baseWidth={APP_WIDTH} baseHeight={APP_HEIGHT} scale={APP_ON_STAGE.scale} style={{ overflow: 'visible' }}>
@@ -224,9 +257,21 @@ export function HeroDemo() {
         <span className={styles.captionIndex}>
           {scene.chapter + 1} / {CHAPTER_COUNT}
         </span>
-        <p className={styles.captionText} aria-hidden="true">
-          {scene.caption}
-        </p>
+        {/* 바뀔 때 이전 자막은 위로, 새 자막은 아래에서 올라옵니다 (같은 칸에 겹쳐서 높이가 흔들리지 않게) */}
+        <div className={styles.captionStack} aria-hidden="true">
+          <AnimatePresence initial={false}>
+            <motion.p
+              key={f.scene}
+              className={styles.captionText}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
+              <CaptionText scene={scene} />
+            </motion.p>
+          </AnimatePresence>
+        </div>
         <div className={styles.controls}>
           <div className={styles.dots} role="group" aria-label="데모 단계 이동">
             {Array.from({ length: CHAPTER_COUNT }, (_, c) => (
@@ -237,7 +282,12 @@ export function HeroDemo() {
                 aria-label={`${c + 1}단계 보기`}
                 aria-current={c === f.chapter ? 'step' : undefined}
                 onClick={() => clock.goToChapter(c)}
-              />
+              >
+                {/* 지금 단계는 다음 단계까지 남은 시간만큼 차오릅니다 */}
+                {c === f.chapter && (
+                  <span className={styles.dotFill} style={{ transform: `scaleX(${chapterProgressAt(clock.t)})` }} />
+                )}
+              </button>
             ))}
           </div>
           <button

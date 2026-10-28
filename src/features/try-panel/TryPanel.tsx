@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Button } from '../../components/Button';
 import { Scaled } from '../../components/Scaled';
@@ -7,6 +7,7 @@ import { TaskCard } from '../../components/app/TaskCard';
 import type { CatMood } from '../../components/app/CatFace';
 import { chat, eventTitle, mail, mergedTask, taskFromChat, taskFromMail } from '../../data/demo';
 import { trackMergeComplete, trackTryStart } from '../../lib/analytics';
+import { useMedia } from '../../lib/useMedia';
 import { NEXT_TEXT, NEXT_TEXT_TOUCH, STEP_LABELS, initialTryState, inputTextOf, tryReducer, type Method } from './tryReducer';
 import { useDragToTarget } from './useDragToTarget';
 import mailIcon from '../../assets/figma/icon-mail-15.svg';
@@ -32,18 +33,6 @@ const MOBILE_CROP = { x: 896, y: 56, w: 432, h: 470 };
  * 크게 보여줍니다. 전체를 넣으면 0.55배로 줄어 글자가 너무 작아지기 때문입니다 (이 크롭은 약 0.9배).
  */
 const DESKTOP_CROP = { x: 512, y: 52, w: 824, h: 720 };
-
-function useMedia(query: string) {
-  const mq = typeof window !== 'undefined' ? window.matchMedia(query) : null;
-  return useSyncExternalStore(
-    (cb) => {
-      mq?.addEventListener('change', cb);
-      return () => mq?.removeEventListener('change', cb);
-    },
-    () => mq?.matches ?? false,
-    () => false,
-  );
-}
 
 export function TryPanel() {
   const [state, dispatch] = useReducer(tryReducer, initialTryState);

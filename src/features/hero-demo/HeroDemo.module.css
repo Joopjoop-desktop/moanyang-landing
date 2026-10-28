@@ -278,12 +278,30 @@
   color: var(--demo-caption-index);
 }
 
-.captionText {
+/* 나가는 자막과 들어오는 자막을 같은 칸에 겹쳐 둡니다 */
+.captionStack {
   flex: 1;
   min-width: 0;
-  font-size: 14.5px;
-  font-weight: 500;
+  display: grid;
+}
+
+.captionText {
+  grid-area: 1 / 1;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.2px;
   color: var(--color-text-primary);
+  /* 두 줄이 될 때 마지막 줄에 한 단어만 남지 않도록 줄 길이를 고르게 나눕니다 */
+  text-wrap: balance;
+}
+
+/* 히어로 제목과 같은 형광펜 띠 */
+.captionEm {
+  font-weight: 700;
+  background: linear-gradient(transparent 50%, var(--color-accent-mark) 50%, var(--color-accent-mark) 95%, transparent 95%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .controls {
@@ -328,16 +346,24 @@
   width: 32.4px;
 }
 
+/* 지금 단계: 회색 막대 위로 검은 막대가 차오릅니다 */
 .dotOn::before {
+  background: var(--color-gray-g50);
+}
+
+.dotFill {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 10px;
+  height: 3.96px;
+  border-radius: 2px;
   background: var(--color-main-black);
+  transform-origin: 0 50%;
 }
 
 .dot:hover::before {
   background: var(--color-gray-g50);
-}
-
-.dotOn:hover::before {
-  background: var(--color-main-black);
 }
 
 .playBtn {
@@ -368,14 +394,35 @@
     padding: 10px 10px 10px 14px;
   }
 
-  .captionText {
+  /* 자막이 한 줄·두 줄을 오가도 아래 내용이 흔들리지 않게 두 줄 높이를 확보합니다 */
+  .captionStack {
     order: 3;
     flex-basis: 100%;
-    font-size: 14px;
+    min-height: calc(17px * 1.45 * 2 + 4px);
+    padding-bottom: 4px;
+  }
+
+  .captionText {
+    font-size: 17px;
   }
 
   .controls {
     margin-left: auto;
+  }
+
+  /* 손가락으로 누르기 쉽게 단계 점과 재생 버튼 영역을 키웁니다 */
+  .dot {
+    height: 40px;
+  }
+
+  .dot::before,
+  .dotFill {
+    top: 18px;
+  }
+
+  .playBtn {
+    width: 40px;
+    height: 40px;
   }
 }
 

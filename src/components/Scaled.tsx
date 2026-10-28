@@ -28,21 +28,21 @@ export function Scaled({ baseWidth, baseHeight, scale, crop, className, style, c
   const outerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const parentScale = useScale();
-  const [fitScale, setFitScale] = useState(scale ?? 1);
-  const [contentHeight, setContentHeight] = useState(baseHeight ?? 0);
-
   const viewW = crop?.w ?? baseWidth;
+  // 배율 대신 부모 너비를 저장해서, 크롭 크기가 매 프레임 바뀌어도(히어로 카메라) 다시 측정하지 않습니다
+  const [outerWidth, setOuterWidth] = useState(viewW);
+  const [contentHeight, setContentHeight] = useState(baseHeight ?? 0);
 
   useLayoutEffect(() => {
     if (scale !== undefined) return;
     const el = outerRef.current;
     if (!el) return;
-    const update = () => setFitScale(el.clientWidth / viewW);
+    const update = () => setOuterWidth(el.clientWidth);
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [scale, viewW]);
+  }, [scale]);
 
   useLayoutEffect(() => {
     if (baseHeight !== undefined) return;
@@ -55,7 +55,7 @@ export function Scaled({ baseWidth, baseHeight, scale, crop, className, style, c
     return () => ro.disconnect();
   }, [baseHeight]);
 
-  const s = scale ?? fitScale;
+  const s = scale ?? outerWidth / viewW;
   const viewH = crop?.h ?? baseHeight ?? contentHeight;
 
   return (

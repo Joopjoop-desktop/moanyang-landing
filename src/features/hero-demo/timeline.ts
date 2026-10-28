@@ -27,21 +27,30 @@ export const MAIL_BODY = { x: 33.02, y: 168.4, lineGap: 23.78, lineHeight: 22.46
 
 /* ───────── 장면(자막) ───────── */
 
-export type Scene = { start: number; chapter: number; caption: string };
+/** em: 자막 중 형광펜으로 강조할 부분 (caption 안에 그대로 들어 있어야 합니다) */
+export type Scene = { start: number; chapter: number; caption: string; em: string };
 
+/** 줄바꿈 없는 공백 — 좁은 화면에서 함께 읽어야 하는 말이 두 줄로 갈라지지 않게 묶습니다 */
+const NB = ' ';
+
+// 자막이 너무 자주 바뀌면 읽기 전에 넘어가므로, 한 자막이 3초 이상 머물도록 단계별로 묶습니다
 export const SCENES: Scene[] = [
-  { start: 0, chapter: 0, caption: '메일에서 필요한 문장을 드래그해서 선택해요' },
-  { start: 2.6, chapter: 0, caption: '선택한 문장을 모아냥 입력창에 끌어다 놓아요' },
-  { start: 4.75, chapter: 1, caption: '놓는 순간 고양이가 먹이를 받고 할 일 카드가 바로 생겨요' },
-  { start: 6.0, chapter: 1, caption: '날짜가 없어서 ‘날짜 없음’으로 표시돼요' },
-  { start: 8.0, chapter: 2, caption: '며칠 뒤 카톡으로 마감일 연락이 와요' },
-  { start: 9.6, chapter: 2, caption: '카톡 메시지는 복사해서' },
-  { start: 11.4, chapter: 2, caption: '입력창에 붙여넣고' },
-  { start: 13.2, chapter: 2, caption: '먹이주기를 눌러요' },
-  { start: 15.4, chapter: 2, caption: '날짜만 담긴 카드는 ‘할 일 없음’으로 표시돼요' },
-  { start: 17.2, chapter: 3, caption: '날짜 카드를 할 일 카드 위로 끌어와 합쳐요' },
-  { start: 19.4, chapter: 3, caption: '하나로 합쳐지며 빠진 정보가 모두 채워져요' },
-  { start: 22.0, chapter: 4, caption: '완성된 일정은 ‘채워 주세요’에서 빠지고 캘린더 23일에 표시돼요' },
+  { start: 0, chapter: 0, caption: '메일에서 필요한 부분만 골라 입력창에 끌어다 놓으면', em: '필요한 부분만' },
+  {
+    start: 4.75,
+    chapter: 1,
+    caption: `고양이가 냠! 마감일이 없어 ‘날짜${NB}없음’ 카드가 돼요`,
+    em: `‘날짜${NB}없음’`,
+  },
+  { start: 8.0, chapter: 2, caption: '며칠 뒤 카톡으로 온 마감일도 복사해서 붙여넣고', em: '복사해서 붙여넣고' },
+  {
+    start: 13.2,
+    chapter: 2,
+    caption: `먹이를 주면 날짜만 있는 ‘할${NB}일${NB}없음’ 카드가 생겨요`,
+    em: `‘할${NB}일${NB}없음’`,
+  },
+  { start: 17.2, chapter: 3, caption: `두 카드를 겹치면 빠진${NB}정보가 채워지며 하나가 돼요`, em: '겹치면' },
+  { start: 22.0, chapter: 4, caption: `완성된 일정은 캘린더${NB}23일에 쏙 들어가요`, em: `캘린더${NB}23일` },
 ];
 
 export const CHAPTER_COUNT = 5;
@@ -64,6 +73,14 @@ export function sceneIndexAt(t: number) {
   let i = 0;
   for (let k = 0; k < SCENES.length; k++) if (t >= SCENES[k].start) i = k;
   return i;
+}
+
+/** 지금 단계가 다음 단계로 넘어가기까지의 진행률 0–1 (단계 점이 차오르는 정도) */
+export function chapterProgressAt(t: number) {
+  const c = SCENES[sceneIndexAt(t)].chapter;
+  const start = CHAPTER_STARTS[c];
+  const end = CHAPTER_STARTS[c + 1] ?? DURATION;
+  return Math.min(1, Math.max(0, (t - start) / (end - start)));
 }
 
 /* ───────── 주요 시각 ───────── */
@@ -104,6 +121,7 @@ const T = {
   fillStep: 0.35,
   cardExit: 22.2,
   day23: 22.6,
+  zoomOut: 23.6,
   fadeOut: 24.9,
 } as const;
 
@@ -130,6 +148,49 @@ function curve(a: Pt, b: Pt, u: number, bend = 0.18): Pt {
   const cy = my + dx * bend;
   const v = 1 - u;
   return { x: v * v * a.x + 2 * v * u * cx + u * u * b.x, y: v * v * a.y + 2 * v * u * cy + u * u * b.y };
+}
+
+/* ───────── 모바일 카메라 ───────── */
+
+/**
+ * 좁은 화면에서 무대 중 보여줄 정사각형 영역 (무대 좌표, 높이 = w).
+ * 전체를 줄이면 글자가 3–4px이 되므로, 지금 동작이 일어나는 곳만 확대해서 보여줍니다.
+ */
+export type Camera = { x: number; y: number; w: number };
+
+const CAM = {
+  /** 메일 창 */
+  mail: { x: 0, y: 0, w: 400 },
+  /** 입력창 + 고양이 + '채워 주세요' 카드 목록 */
+  input: { x: 832, y: 60, w: 288 },
+  /** 합쳐진 카드 — 정보가 네 줄로 펼쳐져 길어지므로 입력창 아래 카드 목록만 봅니다 */
+  merged: { x: 832, y: 204, w: 288 },
+  /** 카톡 창 (아래쪽은 무대 밖이라 배경색으로 비어 보입니다) */
+  kakao: { x: 4, y: 246, w: 392 },
+  /** 캘린더 23일 주변 */
+  day23: { x: 470, y: 196, w: 360 },
+  /** 전체 무대 (위아래는 무대 배경색으로 비어 보입니다) */
+  overview: { x: 0, y: (STAGE.h - STAGE.w) / 2, w: STAGE.w },
+} satisfies Record<string, Camera>;
+
+/** [이동 시작, 도착, 도착 카메라, 이동 곡선] — 커서가 움직이는 구간에 맞춰 카메라가 따라갑니다 */
+const CAMERA_MOVES: [number, number, Camera, (u: number) => number][] = [
+  [T.dragStart, T.dragEnd, CAM.input, easeInOutSoft],
+  [T.kakaoIn - 0.1, T.kakaoIn + 0.6, CAM.kakao, easeInOut],
+  [T.toInput, T.pasteHintIn, CAM.input, easeInOut],
+  [T.merge, T.merge + 0.8, CAM.merged, easeInOut],
+  [T.cardExit, T.cardExit + 0.9, CAM.day23, easeInOut],
+  [T.zoomOut, T.zoomOut + 0.9, CAM.overview, easeInOut],
+];
+
+export function cameraAt(t: number): Camera {
+  let cam: Camera = CAM.mail;
+  for (const [a, b, to, ease] of CAMERA_MOVES) {
+    if (t < a) break;
+    const u = ease(progress(t, a, b));
+    cam = { x: lerp(cam.x, to.x, u), y: lerp(cam.y, to.y, u), w: lerp(cam.w, to.w, u) };
+  }
+  return cam;
 }
 
 /* ───────── 프레임 ───────── */
