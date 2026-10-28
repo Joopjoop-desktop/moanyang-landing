@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Calendar, type EventKind } from './Calendar';
 import { CatFace, type CatMood } from './CatFace';
 import iconX from '../../assets/figma/icon-x.svg';
+import logoLettering from '../../assets/figma/logo-lettering-white.png';
 import chevronLeft from '../../assets/figma/chevron-left.svg';
 import chevronRight from '../../assets/figma/chevron-right.svg';
 import styles from './MoaNyangApp.module.css';
@@ -42,7 +43,7 @@ export const MoaNyangApp = forwardRef<HTMLDivElement, MoaNyangAppProps>(function
   return (
     <div ref={ref} className={styles.app} aria-hidden="true">
       <div className={styles.titlebar}>
-        <span className={styles.logo}>Logo</span>
+        <img className={styles.logo} src={logoLettering} width={108} height={28} alt="" />
         <img className={styles.close} src={iconX} width={20} height={20} alt="" />
       </div>
 

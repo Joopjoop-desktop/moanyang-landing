@@ -21,10 +21,10 @@
   background: var(--color-main-black);
 }
 
+/* Figma 255:7421 (107.61 × 28.04) — 제목 막대와 같은 배경색으로 내보낸 이미지 */
 .logo {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--color-gray-g00);
+  width: 107.61px;
+  height: 28.04px;
 }
 
 .close {
