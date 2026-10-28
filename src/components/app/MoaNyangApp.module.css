@@ -134,15 +134,14 @@
 
 /* 잡고 있는 동안: 놓을 곳을 점선으로 표시 */
 .inputHint {
-  outline: 3px dashed var(--color-main-blue);
+  outline: 3px dashed var(--color-main-black);
   outline-offset: 4px;
 }
 
-/* 위에 올라왔을 때: 실선으로 진하게 (inputHint보다 뒤에 둬야 덮어씁니다) */
+/* 위에 올라왔을 때: 검은 실선 (inputHint보다 뒤에 둬야 덮어씁니다) */
 .inputActive {
-  outline: 3px solid var(--color-main-blue);
+  outline: 3px solid var(--color-main-black);
   outline-offset: 0;
-  box-shadow: 0 6px 18px rgba(22, 75, 238, 0.18);
 }
 
 .dropLabel {
@@ -151,7 +150,7 @@
   top: -42px;
   padding: 5px 12px;
   border-radius: 6px;
-  background: var(--color-main-blue);
+  background: var(--color-main-black);
   font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
