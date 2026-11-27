@@ -1,0 +1,202 @@
+.section {
+  padding: 120px 0 40px;
+}
+
+/* ───────── 공통 ───────── */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+}
+
+/* Button / MD 크기 (Button.module.css의 primary와 같은 색·반응) */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 22px;
+  border: 1px solid var(--color-bg-inverse);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-inverse);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-inverse);
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.button:hover {
+  background: var(--color-gray-g100);
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.file {
+  margin-left: auto;
+  padding-left: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-g50);
+}
+
+/* ───────── 탭 ───────── */
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--color-bg-chip);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.tabOn {
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  box-shadow: 0 1px 4px rgba(42, 42, 42, 0.1);
+}
+
+.tabPanel {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 16px;
+  padding: 40px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-surface);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.step {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.stepNum {
+  flex: 0 0 20px;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-accent-strong);
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stepNote {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-text-tertiary);
+}
+
+.mobileNote {
+  display: none;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.footnote {
+  margin-top: 14px;
+  padding-left: 4px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.stepText {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.tabAction {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.tabAction .button {
+  min-width: 260px;
+}
+
+/* ───────── 반응형 ───────── */
+@media (max-width: 900px) {
+  .tabPanel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tabAction {
+    align-items: stretch;
+  }
+}
+
+/* 모바일에서는 내려받아도 설치할 수 없으므로 버튼 대신 안내 문구를 보여줍니다 */
+@media (hover: none) and (pointer: coarse) {
+  .tabAction .button {
+    display: none;
+  }
+
+  .mobileNote {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding-top: 80px;
+  }
+
+  .tabAction .button {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .tabPanel {
+    padding: 28px 24px;
+  }
+
+  .stepText {
+    font-size: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .tab {
+    transition: none;
+  }
+}

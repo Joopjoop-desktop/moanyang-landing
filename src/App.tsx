@@ -3,6 +3,7 @@ import { Nav } from './sections/Nav';
 import { Hero } from './sections/Hero';
 import { TrySection } from './sections/TrySection';
 import { Values } from './sections/Values';
+import { Download } from './sections/Download';
 import { Notify } from './sections/Notify';
 import { Footer } from './sections/Footer';
 
@@ -16,6 +17,7 @@ export function App() {
         <Hero />
         <TrySection />
         <Values />
+        <Download />
         <Notify />
       </main>
       <Footer />
