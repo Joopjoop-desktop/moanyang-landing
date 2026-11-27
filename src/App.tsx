@@ -15,8 +15,8 @@ export function App() {
       <Nav />
       <main>
         <Hero />
-        <TrySection />
         <Values />
+        <TrySection />
         <Download />
         <Notify />
       </main>
