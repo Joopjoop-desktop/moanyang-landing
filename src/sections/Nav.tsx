@@ -10,11 +10,14 @@ export function Nav() {
           <Logo />
         </a>
         <div className={styles.links}>
+          <a className={styles.link} href="#how">
+            이렇게 정리돼요
+          </a>
           <a className={styles.link} href="#try">
             직접 정리해 보기
           </a>
-          <a className={styles.link} href="#how">
-            이렇게 정리돼요
+          <a className={styles.link} href="#download">
+            다운로드
           </a>
           <ButtonLink href="#notify" size="sm">
             출시 알림 받기
